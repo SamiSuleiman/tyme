@@ -1,0 +1,8 @@
+.fields {
+    margin-bottom: 1.5rem;
+    flex-direction: column;
+}
+
+vscode-button {
+    width: 100%;
+}

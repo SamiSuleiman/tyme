@@ -10,8 +10,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "hello-world.showHelloWorld",
-        "title": "Hello World (Angular): Show"
+        "command": "tyme.show",
+        "title": "tyme: show"
       }
     ]
   },
@@ -36,5 +36,8 @@
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "vscode-test": "^1.5.0"
+  },
+  "dependencies": {
+    "@vscode/codicons": "^0.0.33"
   }
 }

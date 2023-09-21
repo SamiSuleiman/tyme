@@ -1,0 +1,11 @@
+<div>
+  <div class="left">
+    <app-upsert-stopwatch></app-upsert-stopwatch>
+  </div>
+  <div class="right">
+    <app-stopwatch-list
+      *ngIf="stopwatches$ | async as stopwatches"
+      [stopwatches]="stopwatches"
+    ></app-stopwatch-list>
+  </div>
+</div>

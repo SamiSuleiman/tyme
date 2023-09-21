@@ -1,12 +1,13 @@
 import { commands, ExtensionContext } from "vscode";
-import { HelloWorldPanel } from "./panels/HelloWorldPanel";
+import { TymePanel } from "./panels/TymePanel";
+import { LocalStorageService } from "./utilities/localStorageService";
 
 export function activate(context: ExtensionContext) {
-  // Create the show hello world command
-  const showHelloWorldCommand = commands.registerCommand("hello-world.showHelloWorld", () => {
-    HelloWorldPanel.render(context.extensionUri);
-  });
+  let storageManager = new LocalStorageService(context.globalState);
 
-  // Add command to the extension context
-  context.subscriptions.push(showHelloWorldCommand);
+  context.subscriptions.push(
+    commands.registerCommand("tyme.show", () => {
+      TymePanel.render(context.extensionUri, storageManager);
+    })
+  );
 }

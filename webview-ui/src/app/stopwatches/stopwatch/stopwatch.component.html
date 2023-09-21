@@ -1,0 +1,22 @@
+<div class="container">
+  <div class="row">
+    <div class="actions">
+      <vscode-button appearance="secondary">−</vscode-button>
+    </div>
+    <p>{{ stopwatch?.name }}</p>
+    <div class="actions">
+      <vscode-button appearance="secondary" *ngIf="!stopwatch?.isStopped">stop</vscode-button>
+      <vscode-button appearance="secondary" *ngIf="!stopwatch?.isPaused && !stopwatch?.isStopped"
+        >pause</vscode-button
+      >
+      <vscode-button appearance="secondary" *ngIf="stopwatch?.isPaused && !stopwatch?.isStopped"
+        >resume</vscode-button
+      >
+    </div>
+  </div>
+  <div class="row">
+    <p>{{ stopwatch?.desc }}</p>
+    <p>|</p>
+    <p>{{ stopwatch?.createdAt }}</p>
+  </div>
+</div>

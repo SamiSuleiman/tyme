@@ -1,0 +1,8 @@
+<vscode-text-field
+  [placeholder]="placeholder"
+  (input)="onInput($event.target)"
+  [disabled]="disabled"
+  appearance="icon"
+>
+  <span slot="start" class="{{ 'codicon codicon-' + icon }}"></span>
+</vscode-text-field>

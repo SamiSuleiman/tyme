@@ -1,6 +1,7 @@
-import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
-import { getUri } from "../utilities/getUri";
+import { Disposable, Uri, ViewColumn, Webview, WebviewPanel, window } from "vscode";
 import { getNonce } from "../utilities/getNonce";
+import { getUri } from "../utilities/getUri";
+import { LocalStorageService } from "../utilities/localStorageService";
 
 /**
  * This class manages the state and behavior of HelloWorld webview panels.
@@ -12,20 +13,21 @@ import { getNonce } from "../utilities/getNonce";
  * - Setting the HTML (and by proxy CSS/JavaScript) content of the webview panel
  * - Setting message listeners so data can be passed between the webview and extension
  */
-export class HelloWorldPanel {
-  public static currentPanel: HelloWorldPanel | undefined;
+export class TymePanel {
+  public static currentPanel: TymePanel | undefined;
+  private readonly _storage: LocalStorageService;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
 
   /**
-   * The HelloWorldPanel class private constructor (called only from the render method).
+   * The Panel class private constructor (called only from the render method).
    *
    * @param panel A reference to the webview panel
    * @param extensionUri The URI of the directory containing the extension
    */
-  private constructor(panel: WebviewPanel, extensionUri: Uri) {
+  private constructor(panel: WebviewPanel, extensionUri: Uri, storage: LocalStorageService) {
     this._panel = panel;
-
+    this._storage = storage;
     // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
     // the panel or when the panel is closed programmatically)
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
@@ -43,17 +45,17 @@ export class HelloWorldPanel {
    *
    * @param extensionUri The URI of the directory containing the extension.
    */
-  public static render(extensionUri: Uri) {
-    if (HelloWorldPanel.currentPanel) {
+  public static render(extensionUri: Uri, storage: LocalStorageService) {
+    if (TymePanel.currentPanel) {
       // If the webview panel already exists reveal it
-      HelloWorldPanel.currentPanel._panel.reveal(ViewColumn.One);
+      TymePanel.currentPanel._panel.reveal(ViewColumn.One);
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = window.createWebviewPanel(
         // Panel view type
-        "showHelloWorld",
+        "show",
         // Panel title
-        "Hello World",
+        "tyme",
         // The editor column the panel should be displayed in
         ViewColumn.One,
         // Extra panel configurations
@@ -61,11 +63,15 @@ export class HelloWorldPanel {
           // Enable JavaScript in the webview
           enableScripts: true,
           // Restrict the webview to only load resources from the `out` and `webview-ui/build` directories
-          localResourceRoots: [Uri.joinPath(extensionUri, "out"), Uri.joinPath(extensionUri, "webview-ui/build")],
+          localResourceRoots: [
+            Uri.joinPath(extensionUri, "out"),
+            Uri.joinPath(extensionUri, "webview-ui/build"),
+            Uri.joinPath(extensionUri, "node_modules"),
+          ],
         }
       );
 
-      HelloWorldPanel.currentPanel = new HelloWorldPanel(panel, extensionUri);
+      TymePanel.currentPanel = new TymePanel(panel, extensionUri, storage);
     }
   }
 
@@ -73,7 +79,7 @@ export class HelloWorldPanel {
    * Cleans up and disposes of webview resources when the webview panel is closed.
    */
   public dispose() {
-    HelloWorldPanel.currentPanel = undefined;
+    TymePanel.currentPanel = undefined;
 
     // Dispose of the current webview panel
     this._panel.dispose();
@@ -105,19 +111,24 @@ export class HelloWorldPanel {
     const runtimeUri = getUri(webview, extensionUri, ["webview-ui", "build", "runtime.js"]);
     const polyfillsUri = getUri(webview, extensionUri, ["webview-ui", "build", "polyfills.js"]);
     const scriptUri = getUri(webview, extensionUri, ["webview-ui", "build", "main.js"]);
+    const codiconsUri = webview.asWebviewUri(
+      Uri.joinPath(extensionUri, "node_modules", "@vscode/codicons", "dist", "codicon.css")
+    );
 
     const nonce = getNonce();
 
-    // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
+    console.log("BOOB", codiconsUri);
+
     return /*html*/ `
       <!DOCTYPE html>
       <html lang="en">
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${nonce}'; font-src ${webview.cspSource};">
           <link rel="stylesheet" type="text/css" href="${stylesUri}">
-          <title>Hello World</title>
+          <link href="${codiconsUri}" rel="stylesheet" type="text/css" />
+          <title>tyme</title>
         </head>
         <body>
           <app-root></app-root>
@@ -138,17 +149,19 @@ export class HelloWorldPanel {
    */
   private _setWebviewMessageListener(webview: Webview) {
     webview.onDidReceiveMessage(
-      (message: any) => {
-        const command = message.command;
-        const text = message.text;
-
-        switch (command) {
-          case "hello":
-            // Code that should run in response to the hello message command
-            window.showInformationMessage(text);
-            return;
-          // Add more switch case statements here as more webview message commands
-          // are created within the webview context (i.e. inside media/main.js)
+      (message: { cmd: string; payload: { path: string; val: string } }) => {
+        switch (message.cmd) {
+          case "get":
+            {
+              const value = this._storage.getValue(message.payload.path);
+              webview.postMessage({ path: message.payload.path, payload: value });
+            }
+            break;
+          case "set": {
+            this._storage.setValue(message.payload.path, message.payload.val);
+          }
+          default:
+            break;
         }
       },
       undefined,

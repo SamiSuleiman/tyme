@@ -1,0 +1,9 @@
+.container{
+    display: flex;
+    flex-direction: column;
+}
+
+.actions{
+    display: flex;
+    gap: .25rem;
+}

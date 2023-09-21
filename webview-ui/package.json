@@ -7,6 +7,7 @@
     "start": "ng serve",
     "build": "ng build --output-hashing=none",
     "watch": "ng build --watch --configuration development",
+    "watchit": "ng build --watch --output-hashing=none",
     "test": "ng test"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
     "@angular/platform-browser-dynamic": "^16.2.6",
     "@angular/router": "^16.2.6",
     "@vscode/webview-ui-toolkit": "^1.2.2",
+    "luxon": "^3.4.3",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.3"
@@ -28,6 +30,7 @@
     "@angular/cli": "^16.2.3",
     "@angular/compiler-cli": "^16.2.6",
     "@types/jasmine": "~3.10.0",
+    "@types/luxon": "^3.3.2",
     "@types/node": "^20.6.3",
     "@types/vscode-webview": "^1.57.0",
     "jasmine-core": "~4.0.0",

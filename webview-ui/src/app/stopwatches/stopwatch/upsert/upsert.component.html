@@ -1,0 +1,17 @@
+<div class="creator">
+  <form class="row fields" [formGroup]="stopwatchForm">
+    <app-text-field size="50" formControlName="name" icon="tasklist"></app-text-field>
+    <vscode-text-area
+      #descField
+      placeholder="description"
+      oninput="changed($event)"
+      cols="22"
+      rows="10"
+    >
+      <span slot="start" class="codicon codicon-book"></span>
+    </vscode-text-area>
+  </form>
+  <vscode-button (click)="onClickAdd()" appearance="icon">
+    <span class="icon"><i class="codicon codicon-add"></i></span>
+  </vscode-button>
+</div>
