@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { DateTime } from "luxon";
-import { BehaviorSubject, shareReplay, switchMap, take, tap } from "rxjs";
+import { BehaviorSubject, shareReplay, take, tap } from "rxjs";
 import { Data } from "../utilities/data";
 import { AddStopwatch, Stopwatch } from "./stopwatch/stopwatch.model";
 import { genId } from "./utils";
@@ -14,18 +14,18 @@ export class StopwatchesService {
 
   constructor() {
     this._data = new Data();
-    this.get().subscribe();
+    this.get$().subscribe();
   }
 
-  get() {
-    return this._data.get<Stopwatch[]>("stopwatches").pipe(
+  get$() {
+    return this._data.get$<Stopwatch[]>("stopwatches").pipe(
       tap((vals) => {
         this._stopwatches$.next(vals ?? []);
       })
     );
   }
 
-  add(stopwatch: AddStopwatch) {
+  add$(stopwatch: AddStopwatch) {
     const newStopwatch: Stopwatch = {
       id: genId(),
       name: stopwatch.name,
@@ -47,16 +47,27 @@ export class StopwatchesService {
     );
   }
 
-  update(stopwatch: Stopwatch) {
+  update$(stopwatch: Stopwatch) {
     return this.stopwatches$.pipe(
       take(1),
       tap((s) => {
         const old = s.find((old) => old.id === stopwatch.id);
         if (!old) return;
-        const updatedArr = [...s.filter((old) => old.id === stopwatch.id), stopwatch];
-        this._data.set("stopwatches", updatedArr);
-      }),
-      switchMap(() => this.get())
+        const updated = [...s.filter((old) => old.id === stopwatch.id), stopwatch];
+        this._stopwatches$.next(updated);
+        this._data.set("stopwatches", updated);
+      })
+    );
+  }
+
+  remove$(id: string) {
+    return this.stopwatches$.pipe(
+      take(1),
+      tap((s) => {
+        const filtered = s.filter((sw) => sw.id !== id);
+        this._stopwatches$.next(filtered);
+        this._data.set("stopwatches", filtered);
+      })
     );
   }
 }

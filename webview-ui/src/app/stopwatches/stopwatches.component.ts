@@ -20,6 +20,6 @@ export class StopwatchesComponent implements OnInit {
   }
 
   onClickGet() {
-    this.service.get().subscribe();
+    this.service.get$().subscribe();
   }
 }

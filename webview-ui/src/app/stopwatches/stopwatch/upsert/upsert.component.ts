@@ -19,6 +19,6 @@ export class UpsertStopwatchComponent {
   });
 
   onAdd() {
-    this.service.add(this.stopwatchForm.value as AddStopwatch).subscribe();
+    this.service.add$(this.stopwatchForm.value as AddStopwatch).subscribe();
   }
 }

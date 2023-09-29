@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, inject } from "@angular/core";
+import { StopwatchesService } from "../stopwatches.service";
 import { Stopwatch } from "./stopwatch.model";
 
 @Component({
@@ -8,15 +9,13 @@ import { Stopwatch } from "./stopwatch.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StopwatchComponent {
+  private readonly service = inject(StopwatchesService);
+
   @Input({ required: true }) stopwatch: Stopwatch | undefined = undefined;
 
-  @Output() remove = new EventEmitter<string>();
-  @Output() stop = new EventEmitter<string>();
-  @Output() pause = new EventEmitter<string>();
-  @Output() resume = new EventEmitter<string>();
-
   onRemove() {
-    console.log("remove");
+    if (!this.stopwatch) return;
+    this.service.remove$(this.stopwatch?.id).subscribe();
   }
 
   onStop() {

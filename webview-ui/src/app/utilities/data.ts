@@ -2,7 +2,7 @@ import { Observable, filter, fromEvent, map, take } from "rxjs";
 import { vscode } from "./vscode";
 
 export class Data {
-  get<T>(path: string): Observable<T> {
+  get$<T>(path: string): Observable<T> {
     const evt = fromEvent(window, "message").pipe(
       take(1),
       filter((msg: any) => msg.data.path === path),
