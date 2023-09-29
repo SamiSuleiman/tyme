@@ -29,6 +29,5 @@ export class UpsertStopwatchComponent {
   reset() {
     this.stopwatchForm.reset();
     this.stopwatchForm.controls.name.setValue(null);
-    // this.stopwatchForm.setValue({ name: null, desc: null, elapsedInMin: null });
   }
 }
