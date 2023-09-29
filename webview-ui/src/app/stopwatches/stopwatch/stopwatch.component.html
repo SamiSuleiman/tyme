@@ -1,22 +1,27 @@
 <div class="container">
   <div class="row">
     <div class="actions">
-      <vscode-button appearance="secondary">−</vscode-button>
+      <vscode-button appearance="icon">
+        <span class="icon"><i class="codicon codicon-remove"></i></span>
+      </vscode-button>
     </div>
-    <p>{{ stopwatch?.name }}</p>
+    <h3>{{ stopwatch?.name }}</h3>
     <div class="actions">
-      <vscode-button appearance="secondary" *ngIf="!stopwatch?.isStopped">stop</vscode-button>
-      <vscode-button appearance="secondary" *ngIf="!stopwatch?.isPaused && !stopwatch?.isStopped"
-        >pause</vscode-button
-      >
-      <vscode-button appearance="secondary" *ngIf="stopwatch?.isPaused && !stopwatch?.isStopped"
-        >resume</vscode-button
-      >
+      <vscode-button *ngIf="!stopwatch?.isStopped" appearance="icon">
+        <span class="icon"><i class="codicon codicon-stop-circle"></i></span>
+      </vscode-button>
+      <vscode-button appearance="icon" *ngIf="!stopwatch?.isPaused && !stopwatch?.isStopped">
+        <span class="icon"><i class="codicon codicon-debug-pause"></i></span>
+      </vscode-button>
+      <vscode-button appearance="secondary" *ngIf="stopwatch?.isPaused && !stopwatch?.isStopped">
+        <span class="icon"><i class="codicon codicon-play-circle"></i></span>
+      </vscode-button>
     </div>
   </div>
   <div class="row">
-    <p>{{ stopwatch?.desc }}</p>
-    <p>|</p>
-    <p>{{ stopwatch?.createdAt }}</p>
+    <h4>{{ stopwatch?.desc }}</h4>
+  </div>
+  <div class="row">
+    <span>{{ stopwatch?.createdAt }}</span>
   </div>
 </div>

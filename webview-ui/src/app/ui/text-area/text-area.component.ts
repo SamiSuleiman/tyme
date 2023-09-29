@@ -1,21 +1,18 @@
 import { Component, Input, forwardRef } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { provideVSCodeDesignSystem, vsCodeTextField } from "@vscode/webview-ui-toolkit";
-
-provideVSCodeDesignSystem().register(vsCodeTextField);
 
 @Component({
-  selector: "app-text-field",
-  templateUrl: "./text-field.component.html",
+  selector: "app-text-area",
+  templateUrl: "./text-area.component.html",
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TextFieldComponent),
+      useExisting: forwardRef(() => TextAreaComponent),
       multi: true,
     },
   ],
 })
-export class TextFieldComponent implements ControlValueAccessor {
+export class TextAreaComponent implements ControlValueAccessor {
   value: string = "";
 
   @Input() disabled = false;

@@ -1,9 +1,9 @@
 .container{
     display: flex;
     flex-direction: column;
+    margin-block-end: 3rem;
 }
 
-.actions{
-    display: flex;
-    gap: .25rem;
+vscode-button{
+    margin-inline: 0.5rem;
 }
