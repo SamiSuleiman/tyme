@@ -18,7 +18,7 @@ export class UpsertStopwatchComponent {
     elapsedInMin: new FormControl<number>(0),
   });
 
-  onClickAdd() {
+  onAdd() {
     this.service.add(this.stopwatchForm.value as AddStopwatch).subscribe();
   }
 }
