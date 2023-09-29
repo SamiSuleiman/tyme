@@ -21,12 +21,13 @@ export class TextFieldComponent implements ControlValueAccessor {
   @Input() disabled = false;
   @Input() placeholder = "";
   @Input() icon = "";
+  @Input() numbersOnly = false;
 
   onChange = (value: string) => {};
   onTouched = () => {};
 
   writeValue(obj: any) {
-    if (this.disabled) return;
+    if (this.disabled || (this.numbersOnly && isNaN(obj))) return;
 
     this.value = obj;
     this.onChange(obj);

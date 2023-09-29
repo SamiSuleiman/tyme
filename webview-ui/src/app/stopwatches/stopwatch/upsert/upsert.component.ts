@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { tap } from "rxjs";
 import { StopwatchesService } from "../../stopwatches.service";
@@ -10,18 +10,24 @@ import { AddStopwatch } from "../stopwatch.model";
   styleUrls: ["./upsert.component.css"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UpsertStopwatchComponent {
+export class UpsertStopwatchComponent implements OnInit {
+  ngOnInit(): void {
+    this.stopwatchForm.valueChanges.subscribe(console.log);
+  }
   private readonly service = inject(StopwatchesService);
 
   stopwatchForm = new FormGroup({
     name: new FormControl<string>("", [Validators.required]),
     desc: new FormControl<string>("", [Validators.required]),
-    elapsedInMin: new FormControl<number>(0),
+    elapsedInMin: new FormControl<string>(""),
   });
 
   onAdd() {
     this.service
-      .add$(this.stopwatchForm.value as AddStopwatch)
+      .add$({
+        ...this.stopwatchForm.value,
+        elapsedInMin: parseInt(this.stopwatchForm.controls.elapsedInMin.value ?? "0"),
+      } as AddStopwatch)
       .pipe(tap(() => this.stopwatchForm.reset()))
       .subscribe();
   }
