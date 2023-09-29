@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { tap } from "rxjs";
 import { StopwatchesService } from "../../stopwatches.service";
 import { AddStopwatch } from "../stopwatch.model";
 
@@ -19,6 +20,15 @@ export class UpsertStopwatchComponent {
   });
 
   onAdd() {
-    this.service.add$(this.stopwatchForm.value as AddStopwatch).subscribe();
+    this.service
+      .add$(this.stopwatchForm.value as AddStopwatch)
+      .pipe(tap(() => this.stopwatchForm.reset()))
+      .subscribe();
+  }
+
+  reset() {
+    this.stopwatchForm.reset();
+    this.stopwatchForm.controls.name.setValue(null);
+    // this.stopwatchForm.setValue({ name: null, desc: null, elapsedInMin: null });
   }
 }

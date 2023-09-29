@@ -22,7 +22,7 @@ export class TextAreaComponent implements ControlValueAccessor {
   onChange = (value: string) => {};
   onTouched = () => {};
 
-  writeValue(obj: any): void {
+  writeValue(obj: any) {
     if (this.disabled) return;
 
     this.value = obj;
@@ -30,15 +30,15 @@ export class TextAreaComponent implements ControlValueAccessor {
     this.onTouched();
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: any) {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: any) {
     this.onTouched = fn;
   }
 
-  setDisabledState?(isDisabled: boolean): void {
+  setDisabledState?(isDisabled: boolean) {
     this.disabled = isDisabled;
   }
 
