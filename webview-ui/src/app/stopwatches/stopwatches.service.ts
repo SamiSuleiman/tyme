@@ -31,7 +31,7 @@ export class StopwatchesService {
       name: stopwatch.name,
       desc: stopwatch.desc,
       createdAt: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT),
-      start: DateTime.now(),
+      start: DateTime.now().plus({ minute: stopwatch.elapsedInMin ?? 0 }),
       isPaused: false,
       isStopped: false,
       pauses: 0,
