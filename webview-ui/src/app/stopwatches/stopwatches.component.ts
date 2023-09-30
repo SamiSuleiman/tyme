@@ -8,6 +8,7 @@ provideVSCodeDesignSystem().register(allComponents);
 @Component({
   selector: "app-stopwatches",
   templateUrl: "./stopwatches.component.html",
+  styleUrls: ["./stopwatches.component.css"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StopwatchesComponent implements OnInit {
