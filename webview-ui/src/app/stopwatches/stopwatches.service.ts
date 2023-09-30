@@ -53,7 +53,7 @@ export class StopwatchesService {
       tap((s) => {
         const old = s.find((old) => old.id === stopwatch.id);
         if (!old) return;
-        const updated = [...s.filter((old) => old.id === stopwatch.id), stopwatch];
+        const updated = [...s.filter((old) => old.id !== stopwatch.id), stopwatch];
         this._stopwatches$.next(updated);
         this._data.set("stopwatches", updated);
       })

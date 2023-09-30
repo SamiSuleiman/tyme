@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, inject } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeTag } from "@vscode/webview-ui-toolkit";
+import { concat } from "rxjs";
 import { StopwatchesService } from "../stopwatches.service";
 import { Stopwatch } from "./stopwatch.model";
+import { StopwatchStatusService } from "./stopwatch.service";
 
 provideVSCodeDesignSystem().register(vsCodeTag);
 
@@ -13,6 +15,7 @@ provideVSCodeDesignSystem().register(vsCodeTag);
 })
 export class StopwatchComponent {
   private readonly service = inject(StopwatchesService);
+  private readonly statusService = inject(StopwatchStatusService);
 
   @Input({ required: true }) stopwatch: Stopwatch | undefined = undefined;
 
@@ -22,14 +25,25 @@ export class StopwatchComponent {
   }
 
   onStop() {
-    console.log("stop");
+    if (!this.stopwatch) return;
+    concat(
+      ...this.statusService.stop([this.stopwatch]).map((stopped) => this.service.update$(stopped))
+    ).subscribe();
   }
 
   onPause() {
-    console.log("pause");
+    if (!this.stopwatch) return;
+    concat(
+      ...this.statusService.pause([this.stopwatch]).map((paused) => this.service.update$(paused))
+    ).subscribe();
   }
 
   onResume() {
-    console.log("resume");
+    if (!this.stopwatch) return;
+    concat(
+      ...this.statusService
+        .resume([this.stopwatch])
+        .map((stopwatch) => this.service.update$(stopwatch))
+    ).subscribe();
   }
 }

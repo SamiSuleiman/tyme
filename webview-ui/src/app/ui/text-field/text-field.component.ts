@@ -45,7 +45,6 @@ export class TextFieldComponent implements ControlValueAccessor {
   }
 
   onInput(el: any) {
-    console.log(el);
     this.writeValue(el.value);
   }
 }

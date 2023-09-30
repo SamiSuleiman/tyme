@@ -117,8 +117,6 @@ export class TymePanel {
 
     const nonce = getNonce();
 
-    console.log("BOOB", codiconsUri);
-
     return /*html*/ `
       <!DOCTYPE html>
       <html lang="en">
