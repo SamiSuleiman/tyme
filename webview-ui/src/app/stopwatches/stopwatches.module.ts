@@ -7,6 +7,7 @@ import { StopwatchComponent } from "./stopwatch/stopwatch.component";
 import { UpsertStopwatchComponent } from "./stopwatch/upsert/upsert.component";
 import { StopwatchesComponent } from "./stopwatches.component";
 import { StopwatchesService } from "./stopwatches.service";
+import { StopwatchStatusPipe } from './stopwatch/stopwatch-status.pipe';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { StopwatchesService } from "./stopwatches.service";
     StopwatchComponent,
     UpsertStopwatchComponent,
     StopwatchListComponent,
+    StopwatchStatusPipe,
   ],
   imports: [CommonModule, ReactiveFormsModule, UiModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
