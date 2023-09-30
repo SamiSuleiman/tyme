@@ -4,7 +4,7 @@ export interface Stopwatch {
   id: string;
   name: string;
   desc: string;
-  createdAt: DateTime;
+  createdAt: string;
   start: DateTime;
   stop?: DateTime;
   isPaused: boolean;

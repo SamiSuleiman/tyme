@@ -5,7 +5,9 @@
         <span class="icon"><i class="codicon codicon-remove"></i></span>
       </vscode-button>
     </div>
-    <h3>{{ stopwatch.name }}</h3>
+    <h3>
+      {{ stopwatch.name.length > 33 ? (stopwatch.name | slice: 0 : 30) + "..." : stopwatch.name }}
+    </h3>
     <div class="actions">
       <vscode-button *ngIf="!stopwatch?.isStopped" appearance="icon" (click)="onStop()">
         <span class="icon"><i class="codicon codicon-stop-circle"></i></span>
@@ -30,6 +32,6 @@
     <h4>{{ stopwatch.desc }}</h4>
   </div>
   <div class="row">
-    <span>{{ stopwatch.createdAt }}</span>
+    <i>created at: {{ stopwatch.createdAt }}</i>
   </div>
 </div>

@@ -1,9 +1,13 @@
-.container{
-    display: flex;
-    flex-direction: column;
-    margin-block-end: 3rem;
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-block-end: 3rem;
 }
 
-vscode-button{
-    margin-inline: 0.5rem;
+.container > .row:first-child {
+  justify-content: space-between;
+}
+
+vscode-button {
+  margin-inline: 0.5rem;
 }

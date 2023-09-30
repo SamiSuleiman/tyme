@@ -30,7 +30,7 @@ export class StopwatchesService {
       id: genId(),
       name: stopwatch.name,
       desc: stopwatch.desc,
-      createdAt: DateTime.now(),
+      createdAt: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT),
       start: DateTime.now(),
       isPaused: false,
       isStopped: false,

@@ -7,3 +7,7 @@
   grid-template-columns: 0.25fr 0.5fr;
   gap: 3rem;
 }
+
+.right {
+  word-break: break-all;
+}
