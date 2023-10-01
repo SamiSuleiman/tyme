@@ -2,7 +2,26 @@
   "name": "tyme",
   "displayName": "tyme",
   "description": "track time spent on tasks.",
-  "version": "0.0.1",
+  "publisher": "sulsami",
+  "version": "1.0.0",
+  "license": "MIT",
+  "icon": "assets/icon.png",
+  "author": {
+    "name": "Sami Sul",
+    "email": "sulsami68@gmail.com"
+  },
+  "repository": {
+    "url": "https://github.com/SamiSul/tyme"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "time track",
+    "task track",
+    "stopwatch",
+    "todo"
+  ],
   "engines": {
     "vscode": "^1.75.0"
   },

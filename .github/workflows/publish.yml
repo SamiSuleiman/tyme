@@ -1,0 +1,26 @@
+name: "publish vscode extension"
+
+on: push
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org
+      - run: npm run install:all
+      - name: package
+      - run: npm install @vscode/vsce
+      - run: vsce package
+      - run: echo ${{VSCE_PAT}} | vsce login ${{VSCE_USER}}
+      - name: publish
+        run: vsce publish
+        env:
+          VSCE_USER: ${{variables.VSCE_USER}}
+          VSCE_PAT: ${{secrets.VSCE_PAT}}
