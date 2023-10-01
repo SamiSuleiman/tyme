@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, Input, inject } from "@angular/core
 import { provideVSCodeDesignSystem, vsCodeTag } from "@vscode/webview-ui-toolkit";
 import { concat } from "rxjs";
 import { StopwatchesService } from "../stopwatches.service";
+import { StopwatchStatusService } from "./stopwatch-status.service";
 import { Stopwatch } from "./stopwatch.model";
-import { StopwatchStatusService } from "./stopwatch.service";
 
 provideVSCodeDesignSystem().register(vsCodeTag);
 

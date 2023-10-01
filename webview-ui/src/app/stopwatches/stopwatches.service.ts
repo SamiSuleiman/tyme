@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { DateTime } from "luxon";
+import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, shareReplay, take, tap } from "rxjs";
 import { Data } from "../utilities/data";
 import { AddStopwatch, Stopwatch } from "./stopwatch/stopwatch.model";
@@ -31,7 +31,8 @@ export class StopwatchesService {
       name: stopwatch.name,
       desc: stopwatch.desc,
       createdAt: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT),
-      start: DateTime.now().plus({ minute: stopwatch.elapsedInMin ?? 0 }),
+      start: DateTime.now(),
+      elapsed: Duration.fromObject({ minutes: stopwatch.elapsedInMin }),
       isPaused: false,
       isStopped: false,
       pauses: 0,
