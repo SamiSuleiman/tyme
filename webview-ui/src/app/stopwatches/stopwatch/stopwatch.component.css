@@ -9,5 +9,12 @@
 }
 
 vscode-button {
-  margin-inline: 0.5rem;
+  margin-inline: 0.3rem;
+  width: 42px;
+  height: 27px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
 }

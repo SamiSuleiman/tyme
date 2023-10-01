@@ -1,17 +1,15 @@
 <div class="container" *ngIf="stopwatch">
   <div class="row">
     <div class="actions">
-      <div>
-        <vscode-button appearance="icon" (click)="onRemove()">
-          <span class="icon"><i class="codicon codicon-remove"></i></span>
-        </vscode-button>
-        <vscode-tag>{{ stopwatch | stopwatchStatus }}</vscode-tag>
-      </div>
+      <vscode-button appearance="icon" (click)="onRemove()">
+        <span class="icon"><i class="codicon codicon-remove"></i></span>
+      </vscode-button>
     </div>
     <h3>
       {{ stopwatch.name.length > 27 ? (stopwatch.name | slice: 0 : 24) + "..." : stopwatch.name }}
     </h3>
     <div class="actions">
+      <vscode-tag>{{ stopwatch | stopwatchStatus }}</vscode-tag>
       <vscode-button *ngIf="!stopwatch?.isStopped" appearance="icon" (click)="onStop()">
         <span class="icon"><i class="codicon codicon-stop-circle"></i></span>
       </vscode-button>
