@@ -16,17 +16,17 @@ export class StopwatchElapsedPipe implements PipeTransform {
 
   private getElapsed(stopwatch: Stopwatch): string {
     if (stopwatch.isStopped && stopwatch.stop) {
-      let elapsed = stopwatch.stop.diff(stopwatch.start);
+      let elapsed = DateTime.fromISO(stopwatch.stop).diff(DateTime.fromISO(stopwatch.start));
 
-      if (stopwatch.elapsed) elapsed = elapsed.plus(stopwatch.elapsed);
+      if (stopwatch.elapsed) elapsed = elapsed.plus(Duration.fromISO(stopwatch.elapsed));
 
       return this.formatDuration(elapsed);
     } else if (stopwatch.isPaused && stopwatch.elapsed) {
-      return this.formatDuration(stopwatch.elapsed);
+      return this.formatDuration(Duration.fromISO(stopwatch.elapsed));
     }
 
-    let elapsed = DateTime.now().diff(stopwatch.start);
-    if (stopwatch.elapsed) elapsed = elapsed.plus(stopwatch.elapsed);
+    let elapsed = DateTime.now().diff(DateTime.fromISO(stopwatch.start));
+    if (stopwatch.elapsed) elapsed = elapsed.plus(Duration.fromISO(stopwatch.elapsed));
     return this.formatDuration(elapsed);
   }
 

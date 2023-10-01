@@ -1,15 +1,13 @@
-import { DateTime, Duration } from "luxon";
-
 export interface Stopwatch {
   id: string;
   name: string;
   desc: string;
   createdAt: string;
-  start: DateTime;
-  stop?: DateTime;
+  start: string;
+  stop?: string;
   isPaused: boolean;
   isStopped: boolean;
-  elapsed?: Duration;
+  elapsed?: string;
   pauses: number;
 }
 

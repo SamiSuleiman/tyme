@@ -19,6 +19,10 @@ export class StopwatchComponent {
 
   @Input({ required: true }) stopwatch: Stopwatch | undefined = undefined;
 
+  ngOnInit() {
+    console.log(this.stopwatch);
+  }
+
   onRemove() {
     if (!this.stopwatch) return;
     this.service.remove$(this.stopwatch?.id).subscribe();

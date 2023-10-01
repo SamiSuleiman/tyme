@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as _ from "lodash";
-import { DateTime } from "luxon";
+import { DateTime, Duration } from "luxon";
 import { Stopwatch } from "./stopwatch.model";
 
 @Injectable()
@@ -11,11 +11,11 @@ export class StopwatchStatusService {
    */
   pause(stopwatches: Stopwatch[]) {
     return _.cloneDeep(stopwatches.filter((s) => !s.isPaused && !s.isStopped)).map((stopwatch) => {
-      let newElapsed = DateTime.now().diff(stopwatch.start);
+      let newElapsed = DateTime.now().diff(DateTime.fromISO(stopwatch.start));
       if (stopwatch.elapsed) {
-        newElapsed = newElapsed.plus(stopwatch.elapsed);
+        newElapsed = newElapsed.plus(Duration.fromISO(stopwatch.elapsed));
       }
-      stopwatch.elapsed = newElapsed;
+      stopwatch.elapsed = newElapsed.toString() ?? "";
       stopwatch.isPaused = true;
       stopwatch.pauses++;
       return stopwatch;
@@ -31,10 +31,10 @@ export class StopwatchStatusService {
     return _.cloneDeep(stopwatches.filter((s) => !s.isStopped)).map((stopwatch) => {
       if (stopwatch.isPaused) {
         stopwatch.isPaused = false;
-        stopwatch.start = DateTime.now();
+        stopwatch.start = DateTime.now().toString();
       }
       stopwatch.isStopped = true;
-      stopwatch.stop = DateTime.now();
+      stopwatch.stop = DateTime.now().toString();
       return stopwatch;
     });
   }
@@ -45,7 +45,7 @@ export class StopwatchStatusService {
    */
   resume(stopwatches: Stopwatch[]) {
     return _.cloneDeep(stopwatches.filter((s) => s.isPaused)).map((stopwatch) => {
-      stopwatch.start = DateTime.now();
+      stopwatch.start = DateTime.now().toString();
       stopwatch.isPaused = false;
       return stopwatch;
     });
