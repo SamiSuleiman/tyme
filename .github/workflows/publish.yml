@@ -12,15 +12,12 @@ jobs:
       - name: node
         uses: actions/setup-node@v2
         with:
-          node-version: 18
+          node-version: 16
           registry-url: https://registry.npmjs.org
       - run: npm run install:all
-      - name: package
-      - run: npm install @vscode/vsce
-      - run: vsce package
-      - run: echo ${{VSCE_PAT}} | vsce login ${{VSCE_USER}}
+      - run: npm install -g @vscode/vsce
       - name: publish
-        run: vsce publish
+        run: npm run deploy
         env:
-          VSCE_USER: ${{variables.VSCE_USER}}
-          VSCE_PAT: ${{secrets.VSCE_PAT}}
+          VSCE_USER: ${{secrets.VSCE_USER}}
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
