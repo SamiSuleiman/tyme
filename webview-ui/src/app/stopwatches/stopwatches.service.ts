@@ -11,6 +11,7 @@ export class StopwatchesService {
 
   private readonly _stopwatches$ = new BehaviorSubject<Stopwatch[]>([]);
   stopwatches$ = this._stopwatches$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  bufferStopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
   constructor() {
     this._data = new Data();
@@ -54,7 +55,7 @@ export class StopwatchesService {
       tap((s) => {
         const old = s.find((old) => old.id === stopwatch.id);
         if (!old) return;
-        const updated = [...s.filter((old) => old.id !== stopwatch.id), stopwatch];
+        const updated = [stopwatch, ...s.filter((old) => old.id !== stopwatch.id)];
         this._stopwatches$.next(updated);
         this._data.set("stopwatches", updated);
       })

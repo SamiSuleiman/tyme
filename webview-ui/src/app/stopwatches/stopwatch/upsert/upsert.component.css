@@ -10,3 +10,7 @@ form > * {
 vscode-button {
   width: 100%;
 }
+
+.edit-actions {
+  display: flex;
+}

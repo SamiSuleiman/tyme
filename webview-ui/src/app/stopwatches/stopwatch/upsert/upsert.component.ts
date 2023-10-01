@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit, inject } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { tap } from "rxjs";
+import { BehaviorSubject, filter, switchMap, take, tap } from "rxjs";
 import { StopwatchesService } from "../../stopwatches.service";
-import { AddStopwatch } from "../stopwatch.model";
+import { AddStopwatch, Stopwatch } from "../stopwatch.model";
 
 @Component({
   selector: "app-upsert-stopwatch",
@@ -10,8 +10,10 @@ import { AddStopwatch } from "../stopwatch.model";
   styleUrls: ["./upsert.component.css"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UpsertStopwatchComponent {
+export class UpsertStopwatchComponent implements OnInit {
   private readonly service = inject(StopwatchesService);
+
+  stopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
   stopwatchForm = new FormGroup({
     name: new FormControl<string>("", [Validators.required]),
@@ -19,15 +21,56 @@ export class UpsertStopwatchComponent {
     elapsedInMin: new FormControl(0),
   });
 
-  onAdd() {
-    this.service
-      .add$(this.stopwatchForm.value as AddStopwatch)
-      .pipe(tap(() => this.stopwatchForm.reset()))
+  ngOnInit() {
+    this.service.bufferStopwatch$
+      .pipe(
+        tap((s) => {
+          this.stopwatch$.next(s);
+          if (s) {
+            this.resetForm();
+            this.stopwatchForm.patchValue({ name: s.name, desc: s.desc });
+          }
+        })
+      )
       .subscribe();
   }
 
-  reset() {
+  onConfirm() {
+    this.stopwatch$
+      .pipe(
+        take(1),
+        filter((s): s is Stopwatch => !!s),
+        switchMap((s) =>
+          this.service
+            .update$({
+              ...s,
+              name: this.stopwatchForm.value.name ?? s.name,
+              desc: this.stopwatchForm.value.desc ?? s.desc,
+            })
+            .pipe(
+              tap(() => {
+                this.service.bufferStopwatch$.next(undefined);
+                this.resetForm();
+              })
+            )
+        )
+      )
+      .subscribe();
+  }
+
+  onCancelEdit() {
+    this.service.bufferStopwatch$.next(undefined);
+    this.resetForm();
+  }
+
+  onAdd() {
+    this.service
+      .add$(this.stopwatchForm.value as AddStopwatch)
+      .pipe(tap(() => this.resetForm()))
+      .subscribe();
+  }
+
+  private resetForm() {
     this.stopwatchForm.reset();
-    this.stopwatchForm.controls.name.setValue(null);
   }
 }

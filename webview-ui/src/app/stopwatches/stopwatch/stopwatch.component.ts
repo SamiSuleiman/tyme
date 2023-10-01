@@ -19,6 +19,11 @@ export class StopwatchComponent {
 
   @Input({ required: true }) stopwatch: Stopwatch | undefined = undefined;
 
+  onEdit() {
+    if (!this.stopwatch) return;
+    this.service.bufferStopwatch$.next(this.stopwatch);
+  }
+
   onRemove() {
     if (!this.stopwatch) return;
     this.service.remove$(this.stopwatch?.id).subscribe();
