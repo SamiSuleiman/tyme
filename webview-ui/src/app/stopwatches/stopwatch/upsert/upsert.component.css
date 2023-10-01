@@ -1,8 +1,12 @@
-.fields {
-    margin-bottom: 1.5rem;
-    flex-direction: column;
+form {
+  margin-bottom: 1.5rem;
+  flex-direction: column;
+}
+
+form > * {
+  width: 100%;
 }
 
 vscode-button {
-    width: 100%;
+  width: 100%;
 }

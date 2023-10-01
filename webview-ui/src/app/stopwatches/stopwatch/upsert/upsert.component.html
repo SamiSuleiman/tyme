@@ -1,26 +1,24 @@
-<div class="creator">
-  <form class="row fields" [formGroup]="stopwatchForm">
-    <app-text-field
-      placeholder="short and simple name."
-      label="name"
-      size="50"
-      formControlName="name"
-      icon="tasklist"
-    ></app-text-field>
-    <app-text-area
-      placeholder="describe the entry."
-      label="description"
-      formControlName="desc"
-    ></app-text-area>
-    <app-text-field
-      label="offset in minutes"
-      size="50"
-      formControlName="elapsedInMin"
-      icon="watch"
-      type="number"
-    ></app-text-field>
-  </form>
+<form class="row" [formGroup]="stopwatchForm">
+  <app-text-field
+    placeholder="short and simple name."
+    label="name"
+    size="50"
+    formControlName="name"
+    icon="tasklist"
+  ></app-text-field>
+  <app-text-area
+    placeholder="describe the entry."
+    label="description"
+    formControlName="desc"
+  ></app-text-area>
+  <app-text-field
+    label="offset in minutes"
+    size="50"
+    formControlName="elapsedInMin"
+    icon="watch"
+    type="number"
+  ></app-text-field>
   <vscode-button (click)="onAdd()" appearance="icon" [disabled]="stopwatchForm.invalid">
     <span class="icon"><i class="codicon codicon-add"></i></span>
   </vscode-button>
-</div>
+</form>
