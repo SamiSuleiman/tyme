@@ -22,6 +22,7 @@ export class TextFieldComponent implements ControlValueAccessor {
   @Input() placeholder = "";
   @Input() icon = "";
   @Input() type: "number" | "string" = "string";
+  @Input() label = "";
 
   onChange = (value: string) => {};
   onTouched = () => {};

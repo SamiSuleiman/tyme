@@ -1,14 +1,19 @@
 <div class="creator">
   <form class="row fields" [formGroup]="stopwatchForm">
     <app-text-field
-      placeholder="name"
+      placeholder="short and simple name."
+      label="name"
       size="50"
       formControlName="name"
       icon="tasklist"
     ></app-text-field>
-    <app-text-area placeholder="description" formControlName="desc"></app-text-area>
+    <app-text-area
+      placeholder="describe the entry."
+      label="description"
+      formControlName="desc"
+    ></app-text-area>
     <app-text-field
-      placeholder="offset in minutes"
+      label="offset in minutes"
       size="50"
       formControlName="elapsedInMin"
       icon="watch"
