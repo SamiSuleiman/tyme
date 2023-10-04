@@ -15,6 +15,7 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org
       - run: npm run install:all
+      - run: npm run build:webview
       - run: npm install -g @vscode/vsce
       - name: publish
         run: npm run deploy
