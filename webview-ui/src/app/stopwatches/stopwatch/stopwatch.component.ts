@@ -55,7 +55,7 @@ provideVSCodeDesignSystem().register(vsCodeTag);
         </div>
       </div>
       <i>elapsed: {{ stopwatch | stopwatchElapsed | async }}</i>
-      <div class="row">
+      <div class="row desc">
         <h4>{{ stopwatch.desc }}</h4>
       </div>
       <div class="row">
@@ -65,6 +65,11 @@ provideVSCodeDesignSystem().register(vsCodeTag);
   `,
   styles: [
     `
+      .row.desc {
+        width: 50%;
+        white-space: pre-line;
+      }
+
       .container {
         display: flex;
         flex-direction: column;

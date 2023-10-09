@@ -35,12 +35,14 @@ import { StopwatchesService } from "./stopwatches.service";
 
       .container {
         display: grid;
-        grid-template-columns: 0.25fr 0.5fr;
-        gap: 3rem;
+        grid-template-columns: 0.25fr 0.4fr;
+        gap: 6rem;
       }
 
       .right {
         word-break: break-all;
+        max-height: 90vh;
+        overflow: scroll;
       }
     `,
   ],
