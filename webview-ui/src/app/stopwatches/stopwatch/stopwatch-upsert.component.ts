@@ -96,7 +96,7 @@ export class UpsertStopwatchComponent implements OnInit {
 
   stopwatchForm = new FormGroup({
     name: new FormControl<string>("", [Validators.required]),
-    desc: new FormControl<string>("", [Validators.required]),
+    desc: new FormControl<string>(""),
     elapsedInMin: new FormControl(0),
   });
 
@@ -124,7 +124,7 @@ export class UpsertStopwatchComponent implements OnInit {
             .update$({
               ...s,
               name: this.stopwatchForm.value.name ?? s.name,
-              desc: this.stopwatchForm.value.desc ?? s.desc,
+              desc: this.stopwatchForm.value.desc ?? "",
             })
             .pipe(
               tap(() => {

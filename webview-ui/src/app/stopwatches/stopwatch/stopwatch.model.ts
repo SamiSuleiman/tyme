@@ -1,7 +1,7 @@
 export interface Stopwatch {
   id: string;
   name: string;
-  desc: string;
+  desc?: string;
   createdAt: string;
   start: string;
   stop?: string;
