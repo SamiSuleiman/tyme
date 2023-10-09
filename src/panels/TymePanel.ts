@@ -4,11 +4,11 @@ import { getUri } from "../utilities/getUri";
 import { LocalStorageService } from "../utilities/localStorageService";
 
 /**
- * This class manages the state and behavior of HelloWorld webview panels.
+ * This class manages the state and behavior of tyme webview panels.
  *
  * It contains all the data and methods for:
  *
- * - Creating and rendering HelloWorld webview panels
+ * - Creating and rendering tyme webview panels
  * - Properly cleaning up and disposing of webview resources when the panel is closed
  * - Setting the HTML (and by proxy CSS/JavaScript) content of the webview panel
  * - Setting message listeners so data can be passed between the webview and extension
@@ -28,14 +28,8 @@ export class TymePanel {
   private constructor(panel: WebviewPanel, extensionUri: Uri, storage: LocalStorageService) {
     this._panel = panel;
     this._storage = storage;
-    // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
-    // the panel or when the panel is closed programmatically)
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
-
-    // Set the HTML content for the webview panel
     this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
-
-    // Set an event listener to listen for messages passed from the webview context
     this._setWebviewMessageListener(this._panel.webview);
   }
 
@@ -47,44 +41,26 @@ export class TymePanel {
    */
   public static render(extensionUri: Uri, storage: LocalStorageService) {
     if (TymePanel.currentPanel) {
-      // If the webview panel already exists reveal it
       TymePanel.currentPanel._panel.reveal(ViewColumn.One);
     } else {
-      // If a webview panel does not already exist create and show a new one
-      const panel = window.createWebviewPanel(
-        // Panel view type
-        "show",
-        // Panel title
-        "tyme",
-        // The editor column the panel should be displayed in
-        ViewColumn.One,
-        // Extra panel configurations
-        {
-          // Enable JavaScript in the webview
-          enableScripts: true,
-          // Restrict the webview to only load resources from the `out` and `webview-ui/build` directories
-          localResourceRoots: [
-            Uri.joinPath(extensionUri, "out"),
-            Uri.joinPath(extensionUri, "webview-ui/build"),
-            Uri.joinPath(extensionUri, "node_modules"),
-          ],
-        }
-      );
+      const panel = window.createWebviewPanel("show", "tyme", ViewColumn.One, {
+        enableScripts: true,
+        localResourceRoots: [
+          Uri.joinPath(extensionUri, "out"),
+          Uri.joinPath(extensionUri, "webview-ui/build"),
+          Uri.joinPath(extensionUri, "node_modules"),
+        ],
+      });
 
       TymePanel.currentPanel = new TymePanel(panel, extensionUri, storage);
     }
   }
 
-  /**
-   * Cleans up and disposes of webview resources when the webview panel is closed.
-   */
   public dispose() {
     TymePanel.currentPanel = undefined;
 
-    // Dispose of the current webview panel
     this._panel.dispose();
 
-    // Dispose of all disposables (i.e. commands) for the current webview panel
     while (this._disposables.length) {
       const disposable = this._disposables.pop();
       if (disposable) {
@@ -105,9 +81,7 @@ export class TymePanel {
    * rendered within the webview panel
    */
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
-    // The CSS file from the Angular build output
     const stylesUri = getUri(webview, extensionUri, ["webview-ui", "build", "styles.css"]);
-    // The JS files from the Angular build output
     const runtimeUri = getUri(webview, extensionUri, ["webview-ui", "build", "runtime.js"]);
     const polyfillsUri = getUri(webview, extensionUri, ["webview-ui", "build", "polyfills.js"]);
     const scriptUri = getUri(webview, extensionUri, ["webview-ui", "build", "main.js"]);
