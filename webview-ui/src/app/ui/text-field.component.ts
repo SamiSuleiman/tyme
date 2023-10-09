@@ -1,12 +1,24 @@
-import { Component, Input, forwardRef } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, Component, Input, forwardRef } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeTextField } from "@vscode/webview-ui-toolkit";
 
 provideVSCodeDesignSystem().register(vsCodeTextField);
 
 @Component({
-  selector: "app-text-field",
-  templateUrl: "./text-field.component.html",
+  template: `
+    <vscode-text-field
+      style="width: 100%"
+      [type]="type"
+      [value]="value"
+      [placeholder]="placeholder"
+      (input)="onInput($event.target)"
+      [disabled]="disabled"
+      appearance="icon"
+    >
+      <span slot="start" class="{{ 'codicon codicon-' + icon }}"></span>
+      {{ label }}
+    </vscode-text-field>
+  `,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -14,6 +26,9 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
       multi: true,
     },
   ],
+  selector: "app-text-field",
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class TextFieldComponent implements ControlValueAccessor {
   value: string = "";

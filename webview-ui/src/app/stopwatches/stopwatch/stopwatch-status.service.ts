@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import { DateTime, Duration } from "luxon";
 import { Stopwatch } from "./stopwatch.model";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class StopwatchStatusService {
   /**
    * @param stopwatches ***running*** stopwatches to pause.

@@ -5,6 +5,7 @@ import { Stopwatch } from "./stopwatch.model";
 
 @Pipe({
   name: "stopwatchElapsed",
+  standalone: true,
 })
 export class StopwatchElapsedPipe implements PipeTransform {
   transform(value: Stopwatch, ...args: unknown[]) {

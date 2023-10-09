@@ -5,7 +5,7 @@ import { Data } from "../utilities/data";
 import { AddStopwatch, Stopwatch } from "./stopwatch/stopwatch.model";
 import { genId } from "./utils";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class StopwatchesService {
   private readonly _data: Data;
 
