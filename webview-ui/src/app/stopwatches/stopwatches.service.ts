@@ -42,7 +42,7 @@ export class StopwatchesService {
     return this.stopwatches$.pipe(
       take(1),
       tap((s) => {
-        const stopwatches = [...s, newStopwatch];
+        const stopwatches = [newStopwatch, ...s];
         this._stopwatches$.next(stopwatches);
         this._data.set<Stopwatch[]>("stopwatches", stopwatches);
       })
