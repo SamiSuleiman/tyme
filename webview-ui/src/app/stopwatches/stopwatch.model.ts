@@ -16,3 +16,12 @@ export interface AddStopwatch extends Partial<Stopwatch> {
   desc: string;
   elapsedInMin?: number;
 }
+
+export interface StopwatchStats {
+  runningCount: number;
+  pausedCount: number;
+  stoppedCount: number;
+  totalCount: number;
+  elapsedToday: string;
+  totalElapsed: string;
+}

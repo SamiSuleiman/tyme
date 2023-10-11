@@ -8,11 +8,12 @@ import {
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { EMPTY, Observable } from "rxjs";
-import { TextAreaComponent } from "../ui/text-area.component";
-import { TextFieldComponent } from "../ui/text-field.component";
+import { TextAreaComponent } from "../ui/components/text-area.component";
+import { TextFieldComponent } from "../ui/components/text-field.component";
 import { StopwatchListComponent } from "./stopwatch-list.component";
+import { Stopwatch } from "./stopwatch.model";
 import { UpsertStopwatchComponent } from "./stopwatch/stopwatch-upsert.component";
-import { Stopwatch } from "./stopwatch/stopwatch.model";
+import { StopwatchesStatsComponent } from "./stopwatches-stats.component";
 import { StopwatchesService } from "./stopwatches.service";
 
 @Component({
@@ -20,11 +21,13 @@ import { StopwatchesService } from "./stopwatches.service";
     <div class="left">
       <app-upsert-stopwatch></app-upsert-stopwatch>
     </div>
-    <div class="right">
-      <app-stopwatch-list
-        *ngIf="stopwatches$ | async as stopwatches"
-        [stopwatches]="stopwatches"
-      ></app-stopwatch-list>
+    <div class="right" *ngIf="stopwatches$ | async as stopwatches">
+      <div class="stopwatches__stats">
+        <app-stopwatches-stats [stopwatches]="stopwatches"></app-stopwatches-stats>
+      </div>
+      <div class="stopwatches__list">
+        <app-stopwatch-list [stopwatches]="stopwatches"></app-stopwatch-list>
+      </div>
     </div>
   </div> `,
   styles: [
@@ -39,14 +42,24 @@ import { StopwatchesService } from "./stopwatches.service";
         gap: 6rem;
       }
 
+      .right,
+      .stopwatches__list {
+        display: flex;
+      }
+
       .right {
+        flex-direction: column;
+      }
+
+      .stopwatches__list {
         word-break: break-all;
-        max-height: 90vh;
+        max-height: 80vh;
         overflow: scroll;
       }
     `,
   ],
   imports: [
+    StopwatchesStatsComponent,
     CommonModule,
     ReactiveFormsModule,
     TextAreaComponent,

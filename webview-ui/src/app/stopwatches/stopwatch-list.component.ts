@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { Stopwatch } from "./stopwatch.model";
 import { StopwatchComponent } from "./stopwatch/stopwatch.component";
-import { Stopwatch } from "./stopwatch/stopwatch.model";
 
 @Component({
   template: `
@@ -15,5 +15,5 @@ import { Stopwatch } from "./stopwatch/stopwatch.model";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StopwatchListComponent {
-  @Input() stopwatches: Stopwatch[] = [];
+  @Input({ required: true }) stopwatches: Stopwatch[] = [];
 }

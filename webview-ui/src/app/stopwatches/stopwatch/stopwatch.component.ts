@@ -8,11 +8,12 @@ import {
 } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeTag } from "@vscode/webview-ui-toolkit";
 import { concat } from "rxjs";
+import { FormattedDatePipe } from "../../ui/pipes/formatted-date.pipe";
+import { Stopwatch } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
 import { StopwatchElapsedPipe } from "./stopwatch-elapsed.pipe";
 import { StopwatchStatusPipe } from "./stopwatch-status.pipe";
-import { StopwatchStatusService } from "./stopwatch-status.service";
-import { Stopwatch } from "./stopwatch.model";
+import { StopwatchService } from "./stopwatch.service";
 
 provideVSCodeDesignSystem().register(vsCodeTag);
 
@@ -54,12 +55,12 @@ provideVSCodeDesignSystem().register(vsCodeTag);
           </vscode-button>
         </div>
       </div>
-      <i>elapsed: {{ stopwatch | stopwatchElapsed | async }}</i>
+      <i>elapsed: {{ (stopwatch | stopwatchElapsed | async)?.formatted }}</i>
       <div class="row desc">
         <h4>{{ stopwatch.desc }}</h4>
       </div>
       <div class="row">
-        <i>created at: {{ stopwatch.createdAt }}</i>
+        <i>created at: {{ stopwatch.createdAt | formattedDate }}</i>
       </div>
     </div>
   `,
@@ -92,7 +93,7 @@ provideVSCodeDesignSystem().register(vsCodeTag);
       }
     `,
   ],
-  imports: [StopwatchStatusPipe, StopwatchElapsedPipe, CommonModule],
+  imports: [StopwatchStatusPipe, StopwatchElapsedPipe, CommonModule, FormattedDatePipe],
   selector: "app-stopwatch",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -100,7 +101,7 @@ provideVSCodeDesignSystem().register(vsCodeTag);
 })
 export class StopwatchComponent {
   private readonly service = inject(StopwatchesService);
-  private readonly statusService = inject(StopwatchStatusService);
+  private readonly statusService = inject(StopwatchService);
 
   @Input({ required: true }) stopwatch: Stopwatch | undefined = undefined;
 

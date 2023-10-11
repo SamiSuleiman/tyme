@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { Stopwatch } from "./stopwatch.model";
+import { Stopwatch } from "../stopwatch.model";
 
 @Pipe({
   name: "stopwatchStatus",

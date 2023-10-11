@@ -9,10 +9,10 @@ import {
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { allComponents, provideVSCodeDesignSystem } from "@vscode/webview-ui-toolkit";
 import { BehaviorSubject, filter, switchMap, take, tap } from "rxjs";
-import { TextAreaComponent } from "src/app/ui/text-area.component";
-import { TextFieldComponent } from "src/app/ui/text-field.component";
+import { TextAreaComponent } from "src/app/ui/components/text-area.component";
+import { TextFieldComponent } from "src/app/ui/components/text-field.component";
+import { AddStopwatch, Stopwatch } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
-import { AddStopwatch, Stopwatch } from "./stopwatch.model";
 
 provideVSCodeDesignSystem().register(allComponents);
 @Component({
