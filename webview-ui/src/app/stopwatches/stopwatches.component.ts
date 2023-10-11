@@ -8,8 +8,6 @@ import {
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { EMPTY, Observable } from "rxjs";
-import { TextAreaComponent } from "../ui/components/text-area.component";
-import { TextFieldComponent } from "../ui/components/text-field.component";
 import { StopwatchListComponent } from "./stopwatch-list.component";
 import { Stopwatch } from "./stopwatch.model";
 import { UpsertStopwatchComponent } from "./stopwatch/stopwatch-upsert.component";
@@ -21,13 +19,19 @@ import { StopwatchesService } from "./stopwatches.service";
     <div class="left">
       <app-upsert-stopwatch></app-upsert-stopwatch>
     </div>
-    <div class="right" *ngIf="stopwatches$ | async as stopwatches">
+    <div class="right" *ngIf="{ stopwatches: stopwatches$ | async } as value">
       <div class="stopwatches__stats">
-        <app-stopwatches-stats [stopwatches]="stopwatches"></app-stopwatches-stats>
+        <app-stopwatches-stats [stopwatches]="value.stopwatches ?? []"></app-stopwatches-stats>
       </div>
-      <div class="stopwatches__list">
-        <app-stopwatch-list [stopwatches]="stopwatches"></app-stopwatch-list>
+      <div
+        class="stopwatches__list"
+        *ngIf="value.stopwatches && value.stopwatches?.length; else empty"
+      >
+        <app-stopwatch-list [stopwatches]="value.stopwatches"></app-stopwatch-list>
       </div>
+      <ng-template #empty>
+        <h3>empty</h3>
+      </ng-template>
     </div>
   </div> `,
   styles: [
@@ -62,8 +66,6 @@ import { StopwatchesService } from "./stopwatches.service";
     StopwatchesStatsComponent,
     CommonModule,
     ReactiveFormsModule,
-    TextAreaComponent,
-    TextFieldComponent,
     StopwatchListComponent,
     UpsertStopwatchComponent,
   ],
