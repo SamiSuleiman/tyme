@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform, inject } from "@angular/core";
 import { Duration } from "luxon";
-import { interval, map, startWith } from "rxjs";
+import { map, timer } from "rxjs";
 import { Stopwatch } from "../stopwatch.model";
 import { StopwatchService } from "./stopwatch.service";
 
@@ -11,9 +11,8 @@ import { StopwatchService } from "./stopwatch.service";
 export class StopwatchElapsedPipe implements PipeTransform {
   private readonly stopwatchService = inject(StopwatchService);
 
-  transform(value: Stopwatch, ...args: unknown[]) {
-    return interval(Duration.fromObject({ seconds: 1 }).toMillis()).pipe(
-      startWith("just started, good luck."),
+  transform(value: Stopwatch) {
+    return timer(10, Duration.fromObject({ minutes: 1 }).toMillis()).pipe(
       map(() => this.stopwatchService.getElapsed(value))
     );
   }
