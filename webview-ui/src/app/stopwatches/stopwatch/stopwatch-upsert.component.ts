@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { allComponents, provideVSCodeDesignSystem } from "@vscode/webview-ui-toolkit";
-import { BehaviorSubject, filter, switchMap, take, tap } from "rxjs";
+import { BehaviorSubject, switchMap, take, tap } from "rxjs";
 import { TextAreaComponent } from "src/app/ui/components/text-area.component";
 import { TextFieldComponent } from "src/app/ui/components/text-field.component";
 import { AddStopwatch, Stopwatch } from "../stopwatch.model";
@@ -46,7 +46,7 @@ provideVSCodeDesignSystem().register(allComponents);
 
       <vscode-button
         *ngIf="!stopwatch.value; else confirm"
-        (click)="onAdd()"
+        (click)="onConfirm()"
         appearance="icon"
         [disabled]="stopwatchForm.invalid"
       >
@@ -115,27 +115,28 @@ export class UpsertStopwatchComponent implements OnInit {
       .subscribe();
   }
 
+  @HostListener("window:keydown.alt.enter", ["$event"])
   onConfirm() {
+    if (this.stopwatchForm.invalid) return;
     this.stopwatch$
       .pipe(
         take(1),
-        filter((s): s is Stopwatch => !!s),
-        switchMap((s) =>
-          this.service
-            .update$([
-              {
-                ...s,
-                name: this.stopwatchForm.value.name ?? s.name,
-                desc: this.stopwatchForm.value.desc ?? "",
-              },
-            ])
-            .pipe(
-              tap(() => {
-                this.service.bufferStopwatch$.next(undefined);
-                this.resetForm();
-              })
-            )
-        )
+        switchMap((s) => {
+          if (!s) {
+            return this.service.add$(this.stopwatchForm.value as AddStopwatch);
+          }
+          return this.service.update$([
+            {
+              ...s,
+              name: this.stopwatchForm.value.name ?? s.name,
+              desc: this.stopwatchForm.value.desc ?? "",
+            },
+          ]);
+        }),
+        tap(() => {
+          this.service.bufferStopwatch$.next(undefined);
+          this.resetForm();
+        })
       )
       .subscribe();
   }
@@ -143,15 +144,6 @@ export class UpsertStopwatchComponent implements OnInit {
   onCancelEdit() {
     this.service.bufferStopwatch$.next(undefined);
     this.resetForm();
-  }
-
-  @HostListener("window:keydown.alt.enter", ["$event"])
-  onAdd() {
-    if (this.stopwatchForm.invalid) return;
-    this.service
-      .add$(this.stopwatchForm.value as AddStopwatch)
-      .pipe(tap(() => this.resetForm()))
-      .subscribe();
   }
 
   private resetForm() {
