@@ -4,7 +4,7 @@ import { DateTime, Duration } from "luxon";
 import { Stopwatch } from "../stopwatch.model";
 
 @Injectable({ providedIn: "root" })
-export class StopwatchService {
+export class StopwatchStatusService {
   /**
    * @param stopwatches ***running*** stopwatches to pause.
    * @returns the same stopwatches in the correct state

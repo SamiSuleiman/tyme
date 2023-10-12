@@ -49,24 +49,27 @@ export class StopwatchesService {
     );
   }
 
-  update$(stopwatch: Stopwatch) {
+  update$(stopwatches: Stopwatch[]) {
     return this.stopwatches$.pipe(
       take(1),
       tap((s) => {
-        const old = s.find((old) => old.id === stopwatch.id);
-        if (!old) return;
-        const updated = [stopwatch, ...s.filter((old) => old.id !== stopwatch.id)];
+        const olds = s.filter((old) => stopwatches.find((toUpdate) => toUpdate.id === old.id));
+        if (!olds.length) return;
+        const updated = [
+          ...stopwatches,
+          ...s.filter((old) => !stopwatches.find((updated) => updated.id === old.id)),
+        ];
         this._stopwatches$.next(updated);
         this._data.set("stopwatches", updated);
       })
     );
   }
 
-  remove$(id: string) {
+  remove$(id?: string) {
     return this.stopwatches$.pipe(
       take(1),
       tap((s) => {
-        const filtered = s.filter((sw) => sw.id !== id);
+        const filtered = id ? s.filter((sw) => sw.id !== id) : [];
         this._stopwatches$.next(filtered);
         this._data.set("stopwatches", filtered);
       })

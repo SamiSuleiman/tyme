@@ -2,14 +2,14 @@ import { Pipe, PipeTransform, inject } from "@angular/core";
 import { DateTime, Duration } from "luxon";
 import { Observable, map, timer } from "rxjs";
 import { Stopwatch, StopwatchStats } from "./stopwatch.model";
-import { StopwatchService } from "./stopwatch/stopwatch.service";
+import { StopwatchStatusService } from "./stopwatch/stopwatch-status.service";
 
 @Pipe({
   name: "stopwatchesStats",
   standalone: true,
 })
 export class StopwatchesStatsPipe implements PipeTransform {
-  private readonly stopwatchService = inject(StopwatchService);
+  private readonly stopwatchService = inject(StopwatchStatusService);
 
   transform(stopwatches: Stopwatch[]): Observable<StopwatchStats> {
     return timer(10, Duration.fromObject({ minutes: 1 }).toMillis()).pipe(

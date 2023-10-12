@@ -3,6 +3,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
   Component,
+  HostListener,
   OnInit,
   inject,
 } from "@angular/core";
@@ -121,11 +122,13 @@ export class UpsertStopwatchComponent implements OnInit {
         filter((s): s is Stopwatch => !!s),
         switchMap((s) =>
           this.service
-            .update$({
-              ...s,
-              name: this.stopwatchForm.value.name ?? s.name,
-              desc: this.stopwatchForm.value.desc ?? "",
-            })
+            .update$([
+              {
+                ...s,
+                name: this.stopwatchForm.value.name ?? s.name,
+                desc: this.stopwatchForm.value.desc ?? "",
+              },
+            ])
             .pipe(
               tap(() => {
                 this.service.bufferStopwatch$.next(undefined);
@@ -142,7 +145,9 @@ export class UpsertStopwatchComponent implements OnInit {
     this.resetForm();
   }
 
+  @HostListener("window:keydown.alt.enter", ["$event"])
   onAdd() {
+    if (this.stopwatchForm.invalid) return;
     this.service
       .add$(this.stopwatchForm.value as AddStopwatch)
       .pipe(tap(() => this.resetForm()))

@@ -3,13 +3,15 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
   Component,
+  HostListener,
   OnInit,
   inject,
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { EMPTY, Observable } from "rxjs";
+import { EMPTY, Observable, switchMap, take } from "rxjs";
 import { StopwatchListComponent } from "./stopwatch-list.component";
 import { Stopwatch } from "./stopwatch.model";
+import { StopwatchStatusService } from "./stopwatch/stopwatch-status.service";
 import { UpsertStopwatchComponent } from "./stopwatch/stopwatch-upsert.component";
 import { StopwatchesStatsComponent } from "./stopwatches-stats.component";
 import { StopwatchesService } from "./stopwatches.service";
@@ -75,15 +77,63 @@ import { StopwatchesService } from "./stopwatches.service";
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class StopwatchesComponent implements OnInit {
-  private readonly service = inject(StopwatchesService);
+  private readonly swService = inject(StopwatchesService);
+  private readonly swStatusService = inject(StopwatchStatusService);
 
   stopwatches$: Observable<Stopwatch[]> = EMPTY;
 
   ngOnInit() {
-    this.stopwatches$ = this.service.stopwatches$;
+    this.stopwatches$ = this.swService.stopwatches$;
   }
 
   onClickGet() {
-    this.service.get$().subscribe();
+    this.swService.get$().subscribe();
+  }
+
+  @HostListener("window:keydown.alt.backspace")
+  onRemoveAll() {
+    this.swService.remove$().subscribe();
+  }
+
+  @HostListener("window:keydown.alt.p")
+  onPauseAll() {
+    this.stopwatches$
+      .pipe(
+        take(1),
+        switchMap((s) =>
+          this.swService.update$(
+            this.swStatusService.pause(
+              s.filter((toPause) => !toPause.isPaused && !toPause.isStopped)
+            )
+          )
+        )
+      )
+      .subscribe();
+  }
+
+  @HostListener("window:keydown.alt.s")
+  onStopAll() {
+    this.stopwatches$
+      .pipe(
+        take(1),
+        switchMap((s) =>
+          this.swService.update$(this.swStatusService.stop(s.filter((toStop) => !toStop.isStopped)))
+        )
+      )
+      .subscribe();
+  }
+
+  @HostListener("window:keydown.alt.r")
+  onResumeAll() {
+    this.stopwatches$
+      .pipe(
+        take(1),
+        switchMap((s) =>
+          this.swService.update$(
+            this.swStatusService.resume(s.filter((toResume) => toResume.isPaused))
+          )
+        )
+      )
+      .subscribe();
   }
 }

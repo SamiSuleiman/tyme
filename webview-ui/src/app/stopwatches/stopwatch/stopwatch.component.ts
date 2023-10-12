@@ -7,13 +7,12 @@ import {
   inject,
 } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeTag } from "@vscode/webview-ui-toolkit";
-import { concat } from "rxjs";
 import { FormattedDatePipe } from "../../ui/pipes/formatted-date.pipe";
 import { Stopwatch } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
 import { StopwatchElapsedPipe } from "./stopwatch-elapsed.pipe";
 import { StopwatchStatusPipe } from "./stopwatch-status.pipe";
-import { StopwatchService } from "./stopwatch.service";
+import { StopwatchStatusService } from "./stopwatch-status.service";
 
 provideVSCodeDesignSystem().register(vsCodeTag);
 
@@ -101,7 +100,7 @@ provideVSCodeDesignSystem().register(vsCodeTag);
 })
 export class StopwatchComponent {
   private readonly service = inject(StopwatchesService);
-  private readonly statusService = inject(StopwatchService);
+  private readonly statusService = inject(StopwatchStatusService);
 
   @Input({ required: true }) stopwatch: Stopwatch | undefined = undefined;
 
@@ -117,24 +116,16 @@ export class StopwatchComponent {
 
   onStop() {
     if (!this.stopwatch) return;
-    concat(
-      ...this.statusService.stop([this.stopwatch]).map((stopped) => this.service.update$(stopped))
-    ).subscribe();
+    this.service.update$(this.statusService.stop([this.stopwatch])).subscribe();
   }
 
   onPause() {
     if (!this.stopwatch) return;
-    concat(
-      ...this.statusService.pause([this.stopwatch]).map((paused) => this.service.update$(paused))
-    ).subscribe();
+    this.service.update$(this.statusService.pause([this.stopwatch])).subscribe();
   }
 
   onResume() {
     if (!this.stopwatch) return;
-    concat(
-      ...this.statusService
-        .resume([this.stopwatch])
-        .map((stopwatch) => this.service.update$(stopwatch))
-    ).subscribe();
+    this.service.update$(this.statusService.resume([this.stopwatch])).subscribe();
   }
 }
