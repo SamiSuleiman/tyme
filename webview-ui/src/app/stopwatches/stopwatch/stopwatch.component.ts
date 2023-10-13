@@ -30,11 +30,12 @@ provideVSCodeDesignSystem().register(vsCodeTag);
         </div>
         <h3>
           {{
-            stopwatch.name.length > 27 ? (stopwatch.name | slice: 0 : 24) + "..." : stopwatch.name
+            stopwatch.name.length > 21 ? (stopwatch.name | slice: 0 : 18) + "..." : stopwatch.name
           }}
         </h3>
         <div class="actions">
           <vscode-tag>{{ stopwatch | stopwatchStatus }}</vscode-tag>
+          <vscode-tag>{{ stopwatch.pauses }} pauses</vscode-tag>
           <vscode-button *ngIf="!stopwatch?.isStopped" appearance="icon" (click)="onStop()">
             <span class="icon"><i class="codicon codicon-stop-circle"></i></span>
           </vscode-button>
@@ -89,6 +90,7 @@ provideVSCodeDesignSystem().register(vsCodeTag);
       .actions {
         display: flex;
         align-items: center;
+        gap: 1rem;
       }
     `,
   ],

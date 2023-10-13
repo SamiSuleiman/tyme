@@ -122,9 +122,7 @@ export class UpsertStopwatchComponent implements OnInit {
       .pipe(
         take(1),
         switchMap((s) => {
-          if (!s) {
-            return this.service.add$(this.stopwatchForm.value as AddStopwatch);
-          }
+          if (!s) return this.service.add$(this.stopwatchForm.value as AddStopwatch);
           return this.service.update$([
             {
               ...s,
