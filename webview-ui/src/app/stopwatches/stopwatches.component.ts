@@ -30,7 +30,12 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
         <app-stopwatches-stats [stopwatches]="value.stopwatches ?? []"></app-stopwatches-stats>
       </div>
       <div class="stopwatches__actions">
-        <app-stopwatches-actions></app-stopwatches-actions>
+        <app-stopwatches-actions
+          (stopAll)="onStopAll()"
+          (resumeAll)="onResumeAll()"
+          (pauseAll)="onPauseAll()"
+          (removeAll)="onRemoveAll()"
+        ></app-stopwatches-actions>
       </div>
       <div
         class="stopwatches__list"

@@ -39,7 +39,7 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
       .stats,
       section {
         display: flex;
-        gap: 1rem;
+        gap: 0.5rem;
       }
 
       .stats {

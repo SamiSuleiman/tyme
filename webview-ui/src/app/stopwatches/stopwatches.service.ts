@@ -10,8 +10,8 @@ export class StopwatchesService {
   private readonly _data: Data;
 
   private readonly _stopwatches$ = new BehaviorSubject<Stopwatch[]>([]);
-  stopwatches$ = this._stopwatches$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
-  bufferStopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
+  readonly stopwatches$ = this._stopwatches$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  readonly bufferStopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
   constructor() {
     this._data = new Data();

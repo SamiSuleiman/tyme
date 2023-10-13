@@ -16,6 +16,7 @@ import { AddStopwatch, Stopwatch } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
 
 provideVSCodeDesignSystem().register(allComponents);
+
 @Component({
   template: `
     <form
