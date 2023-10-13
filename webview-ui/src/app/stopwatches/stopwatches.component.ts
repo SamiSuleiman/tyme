@@ -8,13 +8,17 @@ import {
   inject,
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
+import { provideVSCodeDesignSystem, vsCodeDivider } from "@vscode/webview-ui-toolkit";
 import { EMPTY, Observable, switchMap, take } from "rxjs";
 import { StopwatchListComponent } from "./stopwatch-list.component";
 import { Stopwatch } from "./stopwatch.model";
 import { StopwatchStatusService } from "./stopwatch/stopwatch-status.service";
 import { UpsertStopwatchComponent } from "./stopwatch/stopwatch-upsert.component";
+import { StopwatchesActionsComponent } from "./stopwatches-actions.component";
 import { StopwatchesStatsComponent } from "./stopwatches-stats.component";
 import { StopwatchesService } from "./stopwatches.service";
+
+provideVSCodeDesignSystem().register(vsCodeDivider);
 
 @Component({
   template: `<div class="container">
@@ -24,6 +28,9 @@ import { StopwatchesService } from "./stopwatches.service";
     <div class="right" *ngIf="{ stopwatches: stopwatches$ | async } as value">
       <div class="stopwatches__stats">
         <app-stopwatches-stats [stopwatches]="value.stopwatches ?? []"></app-stopwatches-stats>
+      </div>
+      <div class="stopwatches__actions">
+        <app-stopwatches-actions></app-stopwatches-actions>
       </div>
       <div
         class="stopwatches__list"
@@ -66,6 +73,7 @@ import { StopwatchesService } from "./stopwatches.service";
   ],
   imports: [
     StopwatchesStatsComponent,
+    StopwatchesActionsComponent,
     CommonModule,
     ReactiveFormsModule,
     StopwatchListComponent,
