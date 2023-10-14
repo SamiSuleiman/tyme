@@ -9,9 +9,9 @@ import {
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeDivider } from "@vscode/webview-ui-toolkit";
-import { EMPTY, Observable, switchMap, take } from "rxjs";
+import { Observable, Subject, switchMap, take, tap } from "rxjs";
 import { StopwatchListComponent } from "./stopwatch-list.component";
-import { Stopwatch } from "./stopwatch.model";
+import { Stopwatch, StopwatchesFilter } from "./stopwatch.model";
 import { StopwatchStatusService } from "./stopwatch/stopwatch-status.service";
 import { UpsertStopwatchComponent } from "./stopwatch/stopwatch-upsert.component";
 import { StopwatchesActionsComponent } from "./stopwatches-actions.component";
@@ -25,7 +25,7 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
     <div class="left">
       <app-upsert-stopwatch></app-upsert-stopwatch>
     </div>
-    <div class="right" *ngIf="{ stopwatches: stopwatches$ | async } as value">
+    <div class="right" *ngIf="{ stopwatches: filteredStopwatches$ | async } as value">
       <div class="stopwatches__stats">
         <app-stopwatches-stats [stopwatches]="value.stopwatches ?? []"></app-stopwatches-stats>
       </div>
@@ -35,6 +35,7 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
           (resumeAll)="onResumeAll()"
           (pauseAll)="onPauseAll()"
           (removeAll)="onRemoveAll()"
+          (filterChange)="onFilterChange($event)"
         ></app-stopwatches-actions>
       </div>
       <div
@@ -50,7 +51,8 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
   </div> `,
   styles: [
     `
-      :host {
+      :host,
+      app-stopwatch-list {
         width: 100%;
       }
 
@@ -93,14 +95,37 @@ export class StopwatchesComponent implements OnInit {
   private readonly swService = inject(StopwatchesService);
   private readonly swStatusService = inject(StopwatchStatusService);
 
-  stopwatches$: Observable<Stopwatch[]> = EMPTY;
+  private readonly _stopwatches$: Observable<Stopwatch[]> = this.swService.stopwatches$;
+  filteredStopwatches$ = new Subject<Stopwatch[]>();
+
+  filterChange$ = new Subject<StopwatchesFilter>();
 
   ngOnInit() {
-    this.stopwatches$ = this.swService.stopwatches$;
+    this.filterChange$
+      .pipe(
+        switchMap((filter) =>
+          this.swService.get$().pipe(
+            switchMap(() =>
+              this._stopwatches$.pipe(
+                tap((stopwatches) => {
+                  const filtered = stopwatches.filter(
+                    (sw) =>
+                      (filter.paused && sw.isPaused) ||
+                      (filter.stopped && sw.isStopped) ||
+                      (filter.running && !sw.isStopped && !sw.isPaused)
+                  );
+                  this.filteredStopwatches$.next(filtered);
+                })
+              )
+            )
+          )
+        )
+      )
+      .subscribe();
   }
 
-  onClickGet() {
-    this.swService.get$().subscribe();
+  onFilterChange(filter: StopwatchesFilter) {
+    this.filterChange$.next(filter);
   }
 
   @HostListener("window:keydown.alt.backspace")
@@ -110,7 +135,7 @@ export class StopwatchesComponent implements OnInit {
 
   @HostListener("window:keydown.alt.p")
   onPauseAll() {
-    this.stopwatches$
+    this._stopwatches$
       .pipe(
         take(1),
         switchMap((s) =>
@@ -126,7 +151,7 @@ export class StopwatchesComponent implements OnInit {
 
   @HostListener("window:keydown.alt.s")
   onStopAll() {
-    this.stopwatches$
+    this._stopwatches$
       .pipe(
         take(1),
         switchMap((s) =>
@@ -138,7 +163,7 @@ export class StopwatchesComponent implements OnInit {
 
   @HostListener("window:keydown.alt.r")
   onResumeAll() {
-    this.stopwatches$
+    this._stopwatches$
       .pipe(
         take(1),
         switchMap((s) =>

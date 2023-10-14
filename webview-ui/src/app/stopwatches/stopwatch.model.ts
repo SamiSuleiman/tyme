@@ -25,3 +25,15 @@ export interface StopwatchStats {
   elapsedToday: string;
   totalElapsed: string;
 }
+
+export interface StopwatchesFilter {
+  running: boolean;
+  paused: boolean;
+  stopped: boolean;
+}
+
+export const defaultFilter: StopwatchesFilter = {
+  running: true,
+  paused: true,
+  stopped: true,
+};

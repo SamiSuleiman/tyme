@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { DateTime, Duration } from "luxon";
-import { BehaviorSubject, shareReplay, take, tap } from "rxjs";
+import { BehaviorSubject, Observable, shareReplay, take, tap } from "rxjs";
 import { Data } from "../utilities/data";
 import { AddStopwatch, Stopwatch } from "./stopwatch.model";
 import { genId } from "./utils";
@@ -15,7 +15,6 @@ export class StopwatchesService {
 
   constructor() {
     this._data = new Data();
-    this.get$().subscribe();
   }
 
   get$() {
@@ -26,7 +25,7 @@ export class StopwatchesService {
     );
   }
 
-  add$(stopwatch: AddStopwatch) {
+  add$(stopwatch: AddStopwatch): Observable<Stopwatch[]> {
     const newStopwatch: Stopwatch = {
       id: genId(),
       name: stopwatch.name,
@@ -49,7 +48,7 @@ export class StopwatchesService {
     );
   }
 
-  update$(stopwatches: Stopwatch[]) {
+  update$(stopwatches: Stopwatch[]): Observable<Stopwatch[]> {
     return this.stopwatches$.pipe(
       take(1),
       tap((s) => {
@@ -65,7 +64,7 @@ export class StopwatchesService {
     );
   }
 
-  remove$(id?: string) {
+  remove$(id?: string): Observable<Stopwatch[]> {
     return this.stopwatches$.pipe(
       take(1),
       tap((s) => {

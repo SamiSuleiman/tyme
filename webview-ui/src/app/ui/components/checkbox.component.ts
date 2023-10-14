@@ -1,52 +1,40 @@
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   Input,
   forwardRef,
-  inject,
 } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { provideVSCodeDesignSystem, vsCodeTextArea } from "@vscode/webview-ui-toolkit";
+import { provideVSCodeDesignSystem, vsCodeCheckbox } from "@vscode/webview-ui-toolkit";
 
-provideVSCodeDesignSystem().register(vsCodeTextArea);
+provideVSCodeDesignSystem().register(vsCodeCheckbox);
 
 @Component({
   template: `
-    <vscode-text-area
-      style="width: 100%"
-      [value]="value"
-      resize="vertical"
-      [placeholder]="placeholder"
-      (input)="onInput($event.target)"
-      cols="22"
-      rows="10"
-    >
+    <vscode-checkbox [disabled]="disabled" [checked]="checked" (change)="onInput($event.target)">
       {{ label }}
-    </vscode-text-area>
+    </vscode-checkbox>
   `,
+  styles: [],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TextAreaComponent),
+      useExisting: forwardRef(() => CheckboxComponent),
       multi: true,
     },
   ],
-  selector: "app-text-area",
+  selector: "app-checkbox",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class TextAreaComponent implements ControlValueAccessor {
-  private readonly cdr = inject(ChangeDetectorRef);
+export class CheckboxComponent implements ControlValueAccessor {
+  value = false;
 
-  value: string = "";
-
-  @Input() label = "";
+  @Input({ required: true }) label = "";
   @Input() disabled = false;
-  @Input() placeholder = "";
-  @Input() icon = "";
+  @Input() checked = false;
 
   onChange = (value: string) => {};
   onTouched = () => {};
@@ -57,7 +45,6 @@ export class TextAreaComponent implements ControlValueAccessor {
     this.value = obj;
     this.onChange(obj);
     this.onTouched();
-    this.cdr.markForCheck();
   }
 
   registerOnChange(fn: any) {
@@ -73,6 +60,6 @@ export class TextAreaComponent implements ControlValueAccessor {
   }
 
   onInput(el: any) {
-    this.writeValue(el.value);
+    this.writeValue(el.checked);
   }
 }
