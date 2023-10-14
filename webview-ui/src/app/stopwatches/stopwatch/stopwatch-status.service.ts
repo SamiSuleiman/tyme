@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import * as _ from "lodash";
 import { DateTime, Duration } from "luxon";
-import { Stopwatch } from "./stopwatch.model";
+import { Stopwatch } from "../stopwatch.model";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class StopwatchStatusService {
   /**
    * @param stopwatches ***running*** stopwatches to pause.
@@ -49,5 +49,26 @@ export class StopwatchStatusService {
       stopwatch.isPaused = false;
       return stopwatch;
     });
+  }
+
+  getElapsed(stopwatch: Stopwatch): { raw: Duration; formatted: string } {
+    if (stopwatch.isStopped && stopwatch.stop) {
+      let elapsed = DateTime.fromISO(stopwatch.stop).diff(DateTime.fromISO(stopwatch.start));
+
+      if (stopwatch.elapsed) elapsed = elapsed.plus(Duration.fromISO(stopwatch.elapsed));
+
+      return { formatted: this.formatDuration(elapsed), raw: elapsed };
+    } else if (stopwatch.isPaused && stopwatch.elapsed) {
+      const raw = Duration.fromISO(stopwatch.elapsed);
+      return { formatted: this.formatDuration(raw), raw };
+    }
+
+    let elapsed = DateTime.now().diff(DateTime.fromISO(stopwatch.start));
+    if (stopwatch.elapsed) elapsed = elapsed.plus(Duration.fromISO(stopwatch.elapsed));
+    return { formatted: this.formatDuration(elapsed), raw: elapsed };
+  }
+
+  formatDuration(duration: Duration): string {
+    return duration.rescale().normalize().toHuman({ unitDisplay: "short" });
   }
 }
