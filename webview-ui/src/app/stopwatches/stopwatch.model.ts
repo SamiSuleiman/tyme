@@ -1,3 +1,5 @@
+import { Duration } from "luxon";
+
 export interface Stopwatch {
   id: string;
   name: string;
@@ -14,7 +16,7 @@ export interface Stopwatch {
 export interface AddStopwatch extends Partial<Stopwatch> {
   name: string;
   desc: string;
-  elapsedInMin?: number;
+  elapsedInMin?: Duration;
 }
 
 export interface StopwatchStats {
@@ -39,9 +41,17 @@ export const defaultFilter: StopwatchesFilter = {
 };
 
 export interface Elapsed {
-  unit: "";
+  unit: TimeUnit;
   duration: number;
 }
 
-export const timeUnits = ["s", "m", "h", "d", "w", "y"]; // {'s':'seconds}
-export type TimeUnits = (typeof timeUnits)[number];
+//todo: find a better way to repeat the same goddamn letters in 10 places :) peace and love <3
+export const timeUnits = {
+  ["s"]: "seconds",
+  ["m"]: "minutes",
+  ["h"]: "hours",
+  ["d"]: "days",
+  ["w"]: "weeks",
+} as const;
+
+export type TimeUnit = "s" | "m" | "h" | "d" | "w";

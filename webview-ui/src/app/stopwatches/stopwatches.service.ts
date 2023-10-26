@@ -32,7 +32,7 @@ export class StopwatchesService {
       desc: stopwatch.desc,
       createdAt: DateTime.now().toString(),
       start: DateTime.now().toString(),
-      elapsed: Duration.fromObject({ minutes: stopwatch.elapsedInMin }).toString() ?? "",
+      elapsed: Duration.fromDurationLike(stopwatch.elapsedInMin ?? 0).toString() ?? "",
       isPaused: false,
       isStopped: false,
       pauses: 0,

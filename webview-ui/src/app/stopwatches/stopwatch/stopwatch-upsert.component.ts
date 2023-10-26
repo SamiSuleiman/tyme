@@ -13,7 +13,7 @@ import { Duration } from "luxon";
 import { BehaviorSubject, switchMap, take, tap } from "rxjs";
 import { TextAreaComponent } from "src/app/ui/components/text-area.component";
 import { TextFieldComponent } from "src/app/ui/components/text-field.component";
-import { AddStopwatch, Elapsed, Stopwatch } from "../stopwatch.model";
+import { AddStopwatch, Elapsed, Stopwatch, TimeUnit, timeUnits } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
 
 provideVSCodeDesignSystem().register(allComponents);
@@ -95,7 +95,7 @@ provideVSCodeDesignSystem().register(allComponents);
 export class UpsertStopwatchComponent implements OnInit {
   private readonly service = inject(StopwatchesService);
 
-  elapsedPattern = new RegExp(/\b\d+[smhdwy]\b/gm);
+  elapsedPattern = new RegExp(/\b\d+[smhdw]\b/gm);
 
   stopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
@@ -129,7 +129,7 @@ export class UpsertStopwatchComponent implements OnInit {
           if (!s)
             return this.service.add$({
               ...this.stopwatchForm.value,
-              elapsedInMin: 0,
+              elapsedInMin: this.parseElapsed(this.stopwatchForm.value.elapsed ?? ""),
             } as AddStopwatch);
           return this.service.update$([
             {
@@ -156,21 +156,18 @@ export class UpsertStopwatchComponent implements OnInit {
     this.stopwatchForm.reset();
   }
 
-  //validate string format e.x: 1h 2m 6y
   private parseElapsed(elapsed: string) {
     return elapsed
       .split(" ")
       .filter((candidate) => this.elapsedPattern.test(candidate))
       .map((elapsed) => {
         return {
-          unit: elapsed.match(/\D/gm)?.[0] ?? "m",
+          unit: elapsed.match(/\D/gm)?.[0] as TimeUnit,
           duration: parseInt(elapsed.match(/\d/gm)?.[0] ?? "") ?? 0,
         } as Elapsed;
       })
       .reduce((_, b) => {
-        return Duration.fromObject({
-          ["seconds"]: b.duration,
-        });
+        return Duration.fromObject({ [timeUnits[b.unit]]: b.duration });
       }, Duration.fromMillis(0));
   }
 }
