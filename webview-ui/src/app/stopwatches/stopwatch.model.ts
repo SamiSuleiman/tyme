@@ -37,3 +37,11 @@ export const defaultFilter: StopwatchesFilter = {
   paused: true,
   stopped: true,
 };
+
+export interface Elapsed {
+  unit: "";
+  duration: number;
+}
+
+export const timeUnits = ["s", "m", "h", "d", "w", "y"]; // {'s':'seconds}
+export type TimeUnits = (typeof timeUnits)[number];

@@ -9,10 +9,11 @@ import {
 } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { allComponents, provideVSCodeDesignSystem } from "@vscode/webview-ui-toolkit";
+import { Duration } from "luxon";
 import { BehaviorSubject, switchMap, take, tap } from "rxjs";
 import { TextAreaComponent } from "src/app/ui/components/text-area.component";
 import { TextFieldComponent } from "src/app/ui/components/text-field.component";
-import { AddStopwatch, Stopwatch } from "../stopwatch.model";
+import { AddStopwatch, Elapsed, Stopwatch } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
 
 provideVSCodeDesignSystem().register(allComponents);
@@ -94,12 +95,14 @@ provideVSCodeDesignSystem().register(allComponents);
 export class UpsertStopwatchComponent implements OnInit {
   private readonly service = inject(StopwatchesService);
 
+  elapsedPattern = new RegExp(/\b\d+[smhdwy]\b/gm);
+
   stopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
   stopwatchForm = new FormGroup({
     name: new FormControl<string>("", [Validators.required]),
     desc: new FormControl<string>(""),
-    elapsedInMin: new FormControl(0),
+    elapsed: new FormControl<string>(""),
   });
 
   ngOnInit() {
@@ -123,7 +126,11 @@ export class UpsertStopwatchComponent implements OnInit {
       .pipe(
         take(1),
         switchMap((s) => {
-          if (!s) return this.service.add$(this.stopwatchForm.value as AddStopwatch);
+          if (!s)
+            return this.service.add$({
+              ...this.stopwatchForm.value,
+              elapsedInMin: 0,
+            } as AddStopwatch);
           return this.service.update$([
             {
               ...s,
@@ -147,5 +154,23 @@ export class UpsertStopwatchComponent implements OnInit {
 
   private resetForm() {
     this.stopwatchForm.reset();
+  }
+
+  //validate string format e.x: 1h 2m 6y
+  private parseElapsed(elapsed: string) {
+    return elapsed
+      .split(" ")
+      .filter((candidate) => this.elapsedPattern.test(candidate))
+      .map((elapsed) => {
+        return {
+          unit: elapsed.match(/\D/gm)?.[0] ?? "m",
+          duration: parseInt(elapsed.match(/\d/gm)?.[0] ?? "") ?? 0,
+        } as Elapsed;
+      })
+      .reduce((_, b) => {
+        return Duration.fromObject({
+          ["seconds"]: b.duration,
+        });
+      }, Duration.fromMillis(0));
   }
 }
