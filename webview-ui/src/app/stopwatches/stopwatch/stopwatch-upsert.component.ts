@@ -36,7 +36,8 @@ provideVSCodeDesignSystem().register(allComponents);
       ></app-text-area>
       <app-text-field
         [disabled]="!!stopwatch.value"
-        label="offset in minutes"
+        label="already elpased time"
+        placeholder="1w 1d 1h 30m 15s"
         size="50"
         formControlName="elapsed"
         icon="watch"
@@ -88,7 +89,7 @@ provideVSCodeDesignSystem().register(allComponents);
 export class UpsertStopwatchComponent implements OnInit {
   private readonly service = inject(StopwatchesService);
 
-  elapsedPattern = new RegExp(/\b\d+[smhdw]\b/gm);
+  elapsedPattern = new RegExp(/\b\d+[smhdw]\b/m);
 
   stopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
@@ -155,12 +156,12 @@ export class UpsertStopwatchComponent implements OnInit {
       .filter((candidate) => this.elapsedPattern.test(candidate))
       .map((elapsed) => {
         return {
-          unit: elapsed.match(/\D/gm)?.[0] as TimeUnit,
-          duration: parseInt(elapsed.match(/\d/gm)?.[0] ?? "") ?? 0,
+          unit: elapsed.match(/\D/m)?.[0] as TimeUnit,
+          duration: parseInt(elapsed.match(/\d+/m)?.[0] ?? "") ?? 0,
         } as Elapsed;
       })
-      .reduce((_, b) => {
-        return Duration.fromObject({ [timeUnits[b.unit]]: b.duration });
+      .reduce((a, b) => {
+        return Duration.fromObject({ [timeUnits[b.unit]]: b.duration }).plus(a);
       }, Duration.fromMillis(0));
   }
 }
