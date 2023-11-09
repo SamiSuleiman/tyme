@@ -18,7 +18,8 @@ provideVSCodeDesignSystem().register(vsCodeTag);
 
 @Component({
   template: `
-    <div class="container" *ngIf="stopwatch">
+    @if (stopwatch) {
+    <div class="container">
       <div class="row">
         <div class="actions">
           <vscode-button appearance="icon" (click)="onRemove()">
@@ -36,23 +37,19 @@ provideVSCodeDesignSystem().register(vsCodeTag);
         <div class="actions">
           <vscode-tag>{{ stopwatch | stopwatchStatus }}</vscode-tag>
           <vscode-tag>{{ stopwatch.pauses }} pauses</vscode-tag>
-          <vscode-button *ngIf="!stopwatch?.isStopped" appearance="icon" (click)="onStop()">
+          @if (!stopwatch.isStopped) {
+          <vscode-button appearance="icon" (click)="onStop()">
             <span class="icon"><i class="codicon codicon-stop-circle"></i></span>
           </vscode-button>
-          <vscode-button
-            appearance="icon"
-            *ngIf="!stopwatch?.isPaused && !stopwatch?.isStopped"
-            (click)="onPause()"
-          >
+          } @if (!stopwatch.isPaused && !stopwatch.isStopped) {
+          <vscode-button appearance="icon" (click)="onPause()">
             <span class="icon"><i class="codicon codicon-debug-pause"></i></span>
           </vscode-button>
-          <vscode-button
-            appearance="secondary"
-            *ngIf="stopwatch?.isPaused && !stopwatch?.isStopped"
-            (click)="onResume()"
-          >
+          } @if (stopwatch.isPaused && !stopwatch.isStopped) {
+          <vscode-button appearance="secondary" (click)="onResume()">
             <span class="icon"><i class="codicon codicon-play-circle"></i></span>
           </vscode-button>
+          }
         </div>
       </div>
       <i>elapsed: {{ (stopwatch | stopwatchElapsed | async)?.formatted }}</i>
@@ -63,6 +60,7 @@ provideVSCodeDesignSystem().register(vsCodeTag);
         <i>created at: {{ stopwatch.createdAt | formattedDate }}</i>
       </div>
     </div>
+    }
   `,
   styles: [
     `

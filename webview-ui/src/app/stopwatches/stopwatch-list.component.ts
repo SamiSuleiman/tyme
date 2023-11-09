@@ -5,9 +5,11 @@ import { StopwatchComponent } from "./stopwatch/stopwatch.component";
 
 @Component({
   template: `
-    <div *ngFor="let item of stopwatches">
+    @for (item of stopwatches; track item) {
+    <div>
       <app-stopwatch [stopwatch]="item"></app-stopwatch>
     </div>
+    }
   `,
   imports: [CommonModule, StopwatchComponent],
   selector: "app-stopwatch-list",

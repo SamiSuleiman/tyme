@@ -20,11 +20,8 @@ provideVSCodeDesignSystem().register(allComponents);
 
 @Component({
   template: `
-    <form
-      class="row"
-      [formGroup]="stopwatchForm"
-      *ngIf="{ value: stopwatch$ | async } as stopwatch"
-    >
+    @if ({ value: stopwatch$ | async }; as stopwatch) {
+    <form class="row" [formGroup]="stopwatchForm">
       <app-text-field
         placeholder="short and simple name."
         label="name"
@@ -41,30 +38,26 @@ provideVSCodeDesignSystem().register(allComponents);
         [disabled]="!!stopwatch.value"
         label="offset in minutes"
         size="50"
-        formControlName="elapsedInMin"
+        formControlName="elapsed"
         icon="watch"
-        type="number"
       ></app-text-field>
 
-      <vscode-button
-        *ngIf="!stopwatch.value; else confirm"
-        (click)="onConfirm()"
-        appearance="icon"
-        [disabled]="stopwatchForm.invalid"
-      >
+      @if (!stopwatch.value) {
+      <vscode-button (click)="onConfirm()" appearance="icon" [disabled]="stopwatchForm.invalid">
         <span class="icon"><i class="codicon codicon-add"></i></span>
       </vscode-button>
-      <ng-template #confirm>
-        <div class="edit-actions">
-          <vscode-button (click)="onConfirm()" appearance="icon" [disabled]="stopwatchForm.invalid">
-            <span class="icon"><i class="codicon codicon-check"></i></span>
-          </vscode-button>
-          <vscode-button (click)="onCancelEdit()" appearance="icon">
-            <span class="icon"><i class="codicon codicon-discard"></i></span>
-          </vscode-button>
-        </div>
-      </ng-template>
+      } @else {
+      <div class="edit-actions">
+        <vscode-button (click)="onConfirm()" appearance="icon" [disabled]="stopwatchForm.invalid">
+          <span class="icon"><i class="codicon codicon-check"></i></span>
+        </vscode-button>
+        <vscode-button (click)="onCancelEdit()" appearance="icon">
+          <span class="icon"><i class="codicon codicon-discard"></i></span>
+        </vscode-button>
+      </div>
+      }
     </form>
+    }
   `,
   styles: [
     `
@@ -129,7 +122,7 @@ export class UpsertStopwatchComponent implements OnInit {
           if (!s)
             return this.service.add$({
               ...this.stopwatchForm.value,
-              elapsedInMin: this.parseElapsed(this.stopwatchForm.value.elapsed ?? ""),
+              elapsed: this.parseElapsed(this.stopwatchForm.value.elapsed ?? ""),
             } as AddStopwatch);
           return this.service.update$([
             {

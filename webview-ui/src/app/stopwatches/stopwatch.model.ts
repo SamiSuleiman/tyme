@@ -13,10 +13,10 @@ export interface Stopwatch {
   pauses: number;
 }
 
-export interface AddStopwatch extends Partial<Stopwatch> {
+export interface AddStopwatch {
   name: string;
   desc: string;
-  elapsedInMin?: Duration;
+  elapsed?: Duration;
 }
 
 export interface StopwatchStats {

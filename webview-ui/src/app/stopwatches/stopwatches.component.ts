@@ -25,7 +25,8 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
     <div class="left">
       <app-upsert-stopwatch></app-upsert-stopwatch>
     </div>
-    <div class="right" *ngIf="{ stopwatches: filteredStopwatches$ | async } as value">
+    @if ({ stopwatches: filteredStopwatches$ | async }; as value) {
+    <div class="right">
       <div class="stopwatches__stats">
         <app-stopwatches-stats [stopwatches]="value.stopwatches ?? []"></app-stopwatches-stats>
       </div>
@@ -38,16 +39,18 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
           (filterChange)="onFilterChange($event)"
         ></app-stopwatches-actions>
       </div>
-      <div
-        class="stopwatches__list"
-        *ngIf="value.stopwatches && value.stopwatches?.length; else empty"
-      >
+      @if (value.stopwatches && value.stopwatches.length) {
+      <div class="stopwatches__list">
         <app-stopwatch-list [stopwatches]="value.stopwatches"></app-stopwatch-list>
       </div>
+      } @else {
+      <h3>empty</h3>
+      }
       <ng-template #empty>
         <h3>empty</h3>
       </ng-template>
     </div>
+    }
   </div> `,
   styles: [
     `

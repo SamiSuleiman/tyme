@@ -8,7 +8,8 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
 
 @Component({
   template: `
-    <div *ngIf="stopwatches | stopwatchesStats | async as stats">
+    @if (stopwatches | stopwatchesStats | async; as stats) {
+    <div>
       <section class="counters">
         <vscode-tag>running: {{ stats.runningCount }}</vscode-tag>
         <vscode-tag>paused: {{ stats.pausedCount }}</vscode-tag>
@@ -21,6 +22,7 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
       </section>
       <vscode-divider></vscode-divider>
     </div>
+    }
   `,
   styles: [
     `
