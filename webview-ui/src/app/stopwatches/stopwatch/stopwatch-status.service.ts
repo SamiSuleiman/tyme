@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import * as _ from "lodash";
 import { DateTime, Duration } from "luxon";
-import { Stopwatch } from "../stopwatch.model";
+import { Memo } from "../stopwatch.model";
 
 @Injectable({ providedIn: "root" })
 export class StopwatchStatusService {
@@ -9,7 +9,7 @@ export class StopwatchStatusService {
    * @param stopwatches ***running*** stopwatches to pause.
    * @returns the same stopwatches in the correct state
    */
-  pause(stopwatches: Stopwatch[]) {
+  pause(stopwatches: Memo[]) {
     return _.cloneDeep(stopwatches.filter((s) => !s.isPaused && !s.isStopped)).map((stopwatch) => {
       let newElapsed = DateTime.now().diff(DateTime.fromISO(stopwatch.start));
       if (stopwatch.elapsed) {
@@ -27,7 +27,7 @@ export class StopwatchStatusService {
    * @returns the same stopwatches in the correct state.
    * @description stopped stopwatches can't be resumed.
    */
-  stop(stopwatches: Stopwatch[]) {
+  stop(stopwatches: Memo[]) {
     return _.cloneDeep(stopwatches.filter((s) => !s.isStopped)).map((stopwatch) => {
       if (stopwatch.isPaused) {
         stopwatch.isPaused = false;
@@ -43,7 +43,7 @@ export class StopwatchStatusService {
    * @param stopwatches ***paused*** stopwatches to resume.
    * @returns the same stopwatches in the correct state.
    */
-  resume(stopwatches: Stopwatch[]) {
+  resume(stopwatches: Memo[]) {
     return _.cloneDeep(stopwatches.filter((s) => s.isPaused)).map((stopwatch) => {
       stopwatch.start = DateTime.now().toString();
       stopwatch.isPaused = false;
@@ -51,7 +51,7 @@ export class StopwatchStatusService {
     });
   }
 
-  getElapsed(stopwatch: Stopwatch): { raw: Duration; formatted: string } {
+  getElapsed(stopwatch: Memo): { raw: Duration; formatted: string } {
     if (stopwatch.isStopped && stopwatch.stop) {
       let elapsed = DateTime.fromISO(stopwatch.stop).diff(DateTime.fromISO(stopwatch.start));
 

@@ -10,7 +10,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeButton, vsCodeDivider } from "@vscode/webview-ui-toolkit";
 import { startWith } from "rxjs";
 import { CheckboxComponent } from "../ui/components/checkbox.component";
-import { StopwatchesFilter, defaultFilter } from "./stopwatch.model";
+import { MemoFilter, defaultFilter } from "./stopwatch.model";
 
 provideVSCodeDesignSystem().register(vsCodeDivider, vsCodeButton);
 
@@ -92,7 +92,7 @@ export class StopwatchesActionsComponent implements OnInit {
     this.filterGroup.setValue(defaultFilter);
     this.filterGroup.valueChanges
       .pipe(startWith(defaultFilter))
-      .subscribe((vals) => this.filterChange.emit(vals as StopwatchesFilter));
+      .subscribe((vals) => this.filterChange.emit(vals as MemoFilter));
   }
 
   getControlVal(key: string) {

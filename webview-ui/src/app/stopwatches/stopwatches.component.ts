@@ -11,7 +11,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeDivider } from "@vscode/webview-ui-toolkit";
 import { Observable, Subject, switchMap, take, tap } from "rxjs";
 import { StopwatchListComponent } from "./stopwatch-list.component";
-import { Stopwatch, StopwatchesFilter } from "./stopwatch.model";
+import { Memo, MemoFilter } from "./stopwatch.model";
 import { StopwatchStatusService } from "./stopwatch/stopwatch-status.service";
 import { UpsertStopwatchComponent } from "./stopwatch/stopwatch-upsert.component";
 import { StopwatchesActionsComponent } from "./stopwatches-actions.component";
@@ -98,10 +98,10 @@ export class StopwatchesComponent implements OnInit {
   private readonly swService = inject(StopwatchesService);
   private readonly swStatusService = inject(StopwatchStatusService);
 
-  private readonly _stopwatches$: Observable<Stopwatch[]> = this.swService.stopwatches$;
-  filteredStopwatches$ = new Subject<Stopwatch[]>();
+  private readonly _stopwatches$: Observable<Memo[]> = this.swService.stopwatches$;
+  filteredStopwatches$ = new Subject<Memo[]>();
 
-  filterChange$ = new Subject<StopwatchesFilter>();
+  filterChange$ = new Subject<MemoFilter>();
 
   ngOnInit() {
     this.filterChange$
@@ -127,7 +127,7 @@ export class StopwatchesComponent implements OnInit {
       .subscribe();
   }
 
-  onFilterChange(filter: StopwatchesFilter) {
+  onFilterChange(filter: MemoFilter) {
     this.filterChange$.next(filter);
   }
 

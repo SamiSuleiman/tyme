@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeTag } from "@vscode/webview-ui-toolkit";
 import { FormattedDatePipe } from "../../ui/pipes/formatted-date.pipe";
-import { Stopwatch } from "../stopwatch.model";
+import { Memo } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
 import { StopwatchElapsedPipe } from "./stopwatch-elapsed.pipe";
 import { StopwatchStatusPipe } from "./stopwatch-status.pipe";
@@ -102,7 +102,7 @@ export class StopwatchComponent {
   private readonly service = inject(StopwatchesService);
   private readonly statusService = inject(StopwatchStatusService);
 
-  @Input({ required: true }) stopwatch: Stopwatch | undefined = undefined;
+  @Input({ required: true }) stopwatch: Memo | undefined = undefined;
 
   onEdit() {
     if (!this.stopwatch) return;
