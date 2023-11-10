@@ -8,6 +8,7 @@ import {
   inject,
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
+import { MatSidenavModule } from "@angular/material/sidenav";
 import { provideVSCodeDesignSystem, vsCodeDivider } from "@vscode/webview-ui-toolkit";
 import { Observable, Subject, switchMap, take, tap } from "rxjs";
 import { StopwatchListComponent } from "./stopwatch-list.component";
@@ -21,37 +22,44 @@ import { StopwatchesService } from "./stopwatches.service";
 provideVSCodeDesignSystem().register(vsCodeDivider);
 
 @Component({
-  template: `<div class="container">
-    <div class="left">
-      <app-upsert-stopwatch></app-upsert-stopwatch>
-    </div>
-    @if ({ stopwatches: filteredStopwatches$ | async }; as value) {
-    <div class="right">
-      <div class="stopwatches__stats">
-        <app-stopwatches-stats [stopwatches]="value.stopwatches ?? []"></app-stopwatches-stats>
-      </div>
-      <div class="stopwatches__actions">
-        <app-stopwatches-actions
-          (stopAll)="onStopAll()"
-          (resumeAll)="onResumeAll()"
-          (pauseAll)="onPauseAll()"
-          (removeAll)="onRemoveAll()"
-          (filterChange)="onFilterChange($event)"
-        ></app-stopwatches-actions>
-      </div>
-      @if (value.stopwatches && value.stopwatches.length) {
-      <div class="stopwatches__list">
-        <app-stopwatch-list [stopwatches]="value.stopwatches"></app-stopwatch-list>
-      </div>
-      } @else {
-      <h3>empty</h3>
-      }
-      <ng-template #empty>
-        <h3>empty</h3>
-      </ng-template>
-    </div>
-    }
-  </div> `,
+  template: `
+    <mat-drawer-container class="example-container" [hasBackdrop]="false">
+      <mat-drawer #drawer mode="push">
+        <div class="left">
+          <app-upsert-stopwatch></app-upsert-stopwatch>
+        </div>
+      </mat-drawer>
+      <mat-drawer-content>
+        <button mat-raised-button (click)="drawer.toggle()">Create/Edit</button>
+        @if ({ stopwatches: filteredStopwatches$ | async }; as value) {
+        <div>
+          <div>
+            <app-stopwatches-stats [stopwatches]="value.stopwatches ?? []"></app-stopwatches-stats>
+          </div>
+          <div>
+            <app-stopwatches-actions
+              (stopAll)="onStopAll()"
+              (resumeAll)="onResumeAll()"
+              (pauseAll)="onPauseAll()"
+              (removeAll)="onRemoveAll()"
+              (filterChange)="onFilterChange($event)"
+            ></app-stopwatches-actions>
+          </div>
+          @if (value.stopwatches && value.stopwatches.length) {
+          <div class="stopwatches__list">
+            <app-stopwatch-list [stopwatches]="value.stopwatches"></app-stopwatch-list>
+          </div>
+          } @else {
+          <h3>empty</h3>
+          }
+          <ng-template #empty>
+            <h3>empty</h3>
+          </ng-template>
+        </div>
+        }
+      </mat-drawer-content>
+    </mat-drawer-container>
+  `,
   styles: [
     `
       :host,
@@ -59,19 +67,13 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
         width: 100%;
       }
 
-      .container {
-        display: grid;
-        grid-template-columns: 0.25fr 0.4fr;
-        gap: 6rem;
+      mat-drawer-content,
+      mat-drawer {
+        background-color: var(--background);
       }
 
-      .right,
-      .stopwatches__list {
-        display: flex;
-      }
-
-      .right {
-        flex-direction: column;
+      mat-drawer-content > * {
+        margin: 1rem;
       }
 
       .stopwatches__list {
@@ -82,6 +84,7 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
     `,
   ],
   imports: [
+    MatSidenavModule,
     StopwatchesStatsComponent,
     StopwatchesActionsComponent,
     CommonModule,
