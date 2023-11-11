@@ -29,7 +29,7 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
       div {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 3px;
       }
 
       section {
@@ -41,7 +41,7 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
       .stats,
       section {
         display: flex;
-        gap: 0.5rem;
+        gap: 3px;
       }
 
       .stats {

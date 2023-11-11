@@ -8,6 +8,8 @@ import {
   inject,
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { provideVSCodeDesignSystem, vsCodeDivider } from "@vscode/webview-ui-toolkit";
 import { Observable, Subject, switchMap, take, tap } from "rxjs";
@@ -23,14 +25,21 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
 
 @Component({
   template: `
-    <mat-drawer-container class="example-container" [hasBackdrop]="false">
-      <mat-drawer #drawer mode="push">
+    <mat-drawer-container [hasBackdrop]="false">
+      <mat-drawer #drawer mode="side" opened>
         <div class="left">
           <app-upsert-stopwatch></app-upsert-stopwatch>
         </div>
       </mat-drawer>
       <mat-drawer-content>
-        <button mat-raised-button (click)="drawer.toggle()">Create/Edit</button>
+        <vscode-button appearance="icon" (click)="drawer.toggle()">
+          @if(drawer.opened){
+          <span class="icon"><i [class]="'codicon codicon-chevron-left'"></i></span>
+          } @else{
+          <span class="icon"><i [class]="'codicon codicon-chevron-right'"></i></span>
+          }
+        </vscode-button>
+
         @if ({ stopwatches: filteredStopwatches$ | async }; as value) {
         <div>
           <div>
@@ -63,13 +72,21 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
   styles: [
     `
       :host,
+      mat-drawer-container,
       app-stopwatch-list {
         width: 100%;
+        height: 100%;
       }
 
       mat-drawer-content,
       mat-drawer {
         background-color: var(--background);
+        color: var(--foreground);
+      }
+
+      mat-drawer {
+        padding: 10px;
+        width: 30%;
       }
 
       mat-drawer-content > * {
@@ -84,7 +101,9 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
     `,
   ],
   imports: [
+    MatButtonModule,
     MatSidenavModule,
+    MatIconModule,
     StopwatchesStatsComponent,
     StopwatchesActionsComponent,
     CommonModule,

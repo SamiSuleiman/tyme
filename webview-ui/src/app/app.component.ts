@@ -11,12 +11,7 @@ import { RouterOutlet } from "@angular/router";
   styles: [
     `
       main {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
         height: 100%;
-        margin: 1rem;
       }
     `,
   ],

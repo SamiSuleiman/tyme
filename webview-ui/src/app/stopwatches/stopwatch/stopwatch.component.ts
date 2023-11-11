@@ -28,15 +28,6 @@ provideVSCodeDesignSystem().register(vsCodeTag);
           <vscode-button appearance="icon" (click)="onEdit()">
             <span class="icon"><i class="codicon codicon-edit"></i></span>
           </vscode-button>
-        </div>
-        <h3>
-          {{
-            stopwatch.name.length > 21 ? (stopwatch.name | slice: 0 : 18) + "..." : stopwatch.name
-          }}
-        </h3>
-        <div class="actions">
-          <vscode-tag>{{ stopwatch | stopwatchStatus }}</vscode-tag>
-          <vscode-tag>{{ stopwatch.pauses }} pauses</vscode-tag>
           @if (!stopwatch.isStopped) {
           <vscode-button appearance="icon" (click)="onStop()">
             <span class="icon"><i class="codicon codicon-stop-circle"></i></span>
@@ -51,19 +42,34 @@ provideVSCodeDesignSystem().register(vsCodeTag);
           </vscode-button>
           }
         </div>
+        <div class="tags">
+          <vscode-tag>{{ stopwatch | stopwatchStatus }}</vscode-tag>
+          <vscode-tag>{{ stopwatch.pauses }} pauses</vscode-tag>
+        </div>
+        <h3>
+          {{
+            stopwatch.name.length > 21 ? (stopwatch.name | slice: 0 : 18) + "..." : stopwatch.name
+          }}
+        </h3>
       </div>
-      <i>elapsed: {{ (stopwatch | stopwatchElapsed | async)?.formatted }}</i>
+      <p>
+        Elapsed: {{ (stopwatch | stopwatchElapsed | async)?.formatted }} | Created at:
+        {{ stopwatch.createdAt | formattedDate }}
+      </p>
+      @if(stopwatch.desc){
       <div class="row desc">
         <h4>{{ stopwatch.desc }}</h4>
       </div>
-      <div class="row">
-        <i>created at: {{ stopwatch.createdAt | formattedDate }}</i>
-      </div>
+      }
     </div>
     }
   `,
   styles: [
     `
+      .tags > :first-child {
+        margin-inline-end: 0.3rem;
+      }
+
       .row.desc {
         width: 50%;
         white-space: pre-line;
@@ -73,6 +79,7 @@ provideVSCodeDesignSystem().register(vsCodeTag);
         display: flex;
         flex-direction: column;
         margin-block-end: 3rem;
+        align-items: flex-start;
       }
 
       .container > .row:first-child {
@@ -88,7 +95,6 @@ provideVSCodeDesignSystem().register(vsCodeTag);
       .actions {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
       }
     `,
   ],

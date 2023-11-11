@@ -23,21 +23,21 @@ provideVSCodeDesignSystem().register(allComponents);
     @if ({ value: stopwatch$ | async }; as stopwatch) {
     <form class="row" [formGroup]="stopwatchForm">
       <app-text-field
-        placeholder="short and simple name."
-        label="name"
+        placeholder="Short and simple name"
+        label="Name"
         size="50"
         formControlName="name"
         icon="tasklist"
       ></app-text-field>
       <app-text-area
-        placeholder="describe the entry."
-        label="description"
+        placeholder="Describe the entry"
+        label="Description"
         formControlName="desc"
       ></app-text-area>
       <app-text-field
         [disabled]="!!stopwatch.value"
-        label="already elpased time"
-        placeholder="1w 1d 1h 30m 15s"
+        label="Already elpased time"
+        placeholder="ex.: 1w 1d 1h 30m 15s"
         size="50"
         formControlName="elapsed"
         icon="watch"

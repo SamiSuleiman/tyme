@@ -61,10 +61,8 @@ provideVSCodeDesignSystem().register(vsCodeDivider, vsCodeButton);
         align-items: center;
       }
 
-      .actions {
-        display: grid;
-        gap: 0.5rem;
-        grid-template-columns: 1fr 1fr;
+      vscode-button {
+        margin: 3px;
       }
     `,
   ],
