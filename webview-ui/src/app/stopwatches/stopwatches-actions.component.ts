@@ -1,10 +1,10 @@
 import {
-    CUSTOM_ELEMENTS_SCHEMA,
-    ChangeDetectionStrategy,
-    Component,
-    EventEmitter,
-    OnInit,
-    Output,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
 } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeButton, vsCodeDivider } from "@vscode/webview-ui-toolkit";

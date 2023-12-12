@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
 import {
-    CUSTOM_ELEMENTS_SCHEMA,
-    ChangeDetectionStrategy,
-    Component,
-    HostListener,
-    OnInit,
-    inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  OnInit,
+  inject,
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
