@@ -1,10 +1,12 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { PrefsService } from "./prefs.service";
 
 @Component({
   template: ` <p>prefs works!</p> `,
   styles: ``,
   imports: [CommonModule],
+  providers: [PrefsService],
   selector: "app-prefs",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

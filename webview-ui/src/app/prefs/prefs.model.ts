@@ -1,4 +1,4 @@
-import { StopwatchFilter } from "../stopwatches/stopwatch.model";
+import { StopwatchFilter, defaultFilter } from "../stopwatches/stopwatch.model";
 
 export interface Prefs {
   filter: StopwatchFilter;
@@ -14,7 +14,8 @@ export interface Keybinds {
   confirmDelete: boolean;
   submit: string;
 }
-export const defaultKeybinds: Keybinds = {
+
+const defaultKeybinds: Keybinds = {
   deleteAll: "alt.backspace",
   pauseAll: "alt.p",
   resumeAll: "alt.r",
@@ -22,4 +23,9 @@ export const defaultKeybinds: Keybinds = {
   toggleDrawer: "alt.d",
   confirmDelete: true,
   submit: "alt.enter",
+};
+
+export const defaultPrefs: Prefs = {
+  filter: defaultFilter,
+  keybinds: defaultKeybinds,
 };
