@@ -1,10 +1,10 @@
 import { CommonModule } from "@angular/common";
 import {
-    CUSTOM_ELEMENTS_SCHEMA,
-    ChangeDetectionStrategy,
-    Component,
-    Input,
-    inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  inject,
 } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeTag } from "@vscode/webview-ui-toolkit";
 import { FormattedDatePipe } from "../../ui/pipes/formatted-date.pipe";
@@ -108,30 +108,25 @@ export class StopwatchComponent {
   private readonly service = inject(StopwatchesService);
   private readonly statusService = inject(StopwatchStatusService);
 
-  @Input({ required: true }) stopwatch: Stopwatch | undefined = undefined;
+  @Input({ required: true }) stopwatch: Stopwatch;
 
   onEdit() {
-    if (!this.stopwatch) return;
     this.service.bufferStopwatch$.next(this.stopwatch);
   }
 
   onRemove() {
-    if (!this.stopwatch) return;
     this.service.remove$(this.stopwatch?.id).subscribe();
   }
 
   onStop() {
-    if (!this.stopwatch) return;
     this.service.update$(this.statusService.stop([this.stopwatch])).subscribe();
   }
 
   onPause() {
-    if (!this.stopwatch) return;
     this.service.update$(this.statusService.pause([this.stopwatch])).subscribe();
   }
 
   onResume() {
-    if (!this.stopwatch) return;
     this.service.update$(this.statusService.resume([this.stopwatch])).subscribe();
   }
 }
