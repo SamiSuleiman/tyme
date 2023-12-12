@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, filter, shareReplay, tap } from "rxjs";
+import { BehaviorSubject, Observable, filter, shareReplay, tap } from "rxjs";
 import { data } from "../utilities/data";
 import { Prefs, defaultPrefs } from "./prefs.model";
 
@@ -12,12 +12,22 @@ export class PrefsService {
   );
 
   constructor() {
-    data
-      .get$<Prefs>("prefs")
-      .pipe(
-        filter((prefs) => !prefs),
-        tap(() => data.set("prefs", defaultPrefs))
-      )
-      .subscribe();
+    this.get$().subscribe();
+  }
+
+  update(prefs: Prefs): void {
+    data.set("prefs", prefs);
+    this._prefs$.next(prefs);
+  }
+
+  private get$(): Observable<Prefs> {
+    return data.get$<Prefs>("prefs").pipe(
+      tap((prefs) => {
+        if (!prefs) {
+          data.set("prefs", defaultPrefs);
+        }
+        this._prefs$.next(prefs ? prefs : defaultPrefs);
+      })
+    );
   }
 }

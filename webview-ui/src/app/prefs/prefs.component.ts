@@ -58,8 +58,8 @@ export class PrefsComponent implements OnInit {
       deleteAll: new FormControl(""),
       pauseAll: new FormControl(""),
       resumeAll: new FormControl(""),
-      stopAll: new FormControl(".s"),
-      toggleDrawer: new FormControl("d"),
+      stopAll: new FormControl(""),
+      toggleDrawer: new FormControl(""),
       submit: new FormControl(""),
       confirmDelete: new FormControl(false),
     }),
@@ -69,7 +69,9 @@ export class PrefsComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.perfsService.prefs$.pipe(tap((perfs) => this.prefsForm.patchValue(perfs))).subscribe();
+    this.perfsService.prefs$
+      .pipe(tap((perfs) => this.prefsForm.patchValue(perfs)))
+      .subscribe(console.log);
   }
 
   onSubmit(): void {
