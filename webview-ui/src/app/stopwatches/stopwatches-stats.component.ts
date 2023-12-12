@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeDivider, vsCodeTag } from "@vscode/webview-ui-toolkit";
 import { Stopwatch } from "./stopwatch.model";
@@ -49,7 +49,7 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
       }
     `,
   ],
-  imports: [CommonModule, StopwatchesStatsPipe],
+  imports: [StopwatchesStatsPipe, AsyncPipe],
   selector: "app-stopwatches-stats",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

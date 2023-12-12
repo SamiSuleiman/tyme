@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
@@ -9,17 +9,19 @@ import {
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { provideVSCodeDesignSystem, vsCodeDivider } from "@vscode/webview-ui-toolkit";
 import { Observable, Subject, switchMap, take, tap } from "rxjs";
-import { StopwatchListComponent } from "./stopwatch-list.component";
-import { Stopwatch, StopwatchFilter } from "./stopwatch.model";
-import { StopwatchStatusService } from "./stopwatch/stopwatch-status.service";
-import { UpsertStopwatchComponent } from "./stopwatch/stopwatch-upsert.component";
-import { StopwatchesActionsComponent } from "./stopwatches-actions.component";
-import { StopwatchesStatsComponent } from "./stopwatches-stats.component";
-import { StopwatchesService } from "./stopwatches.service";
+import { PrefsComponent } from "../prefs/prefs.component";
+import { StopwatchListComponent } from "../stopwatches/stopwatch-list.component";
+import { Stopwatch, StopwatchFilter } from "../stopwatches/stopwatch.model";
+import { StopwatchStatusService } from "../stopwatches/stopwatch/stopwatch-status.service";
+import { UpsertStopwatchComponent } from "../stopwatches/stopwatch/stopwatch-upsert.component";
+import { StopwatchesActionsComponent } from "../stopwatches/stopwatches-actions.component";
+import { StopwatchesStatsComponent } from "../stopwatches/stopwatches-stats.component";
+import { StopwatchesService } from "../stopwatches/stopwatches.service";
 
 provideVSCodeDesignSystem().register(vsCodeDivider);
 
@@ -38,6 +40,9 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
           } @else{
           <span class="icon"><i [class]="'codicon codicon-chevron-right'"></i></span>
           }
+        </vscode-button>
+        <vscode-button appearance="icon" (click)="onOpenPrefs()">
+          <span class="icon"><i [class]="'codicon codicon-settings'"></i></span>
         </vscode-button>
 
         @if ({ stopwatches: filteredStopwatches$ | async }; as value) {
@@ -101,24 +106,26 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
     `,
   ],
   imports: [
+    MatDialogModule,
     MatButtonModule,
     MatSidenavModule,
     MatIconModule,
     StopwatchesStatsComponent,
     StopwatchesActionsComponent,
-    CommonModule,
     ReactiveFormsModule,
     StopwatchListComponent,
     UpsertStopwatchComponent,
+    AsyncPipe,
   ],
-  selector: "app-stopwatches",
+  selector: "app-home",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class StopwatchesComponent implements OnInit {
+export class HomeComponent implements OnInit {
   private readonly swService = inject(StopwatchesService);
   private readonly swStatusService = inject(StopwatchStatusService);
+  private readonly dialog = inject(MatDialog);
 
   private readonly _stopwatches$: Observable<Stopwatch[]> = this.swService.stopwatches$;
   filteredStopwatches$ = new Subject<Stopwatch[]>();
@@ -147,6 +154,13 @@ export class StopwatchesComponent implements OnInit {
         )
       )
       .subscribe();
+  }
+
+  onOpenPrefs() {
+    this.dialog.open(PrefsComponent, {
+      width: "400px",
+      height: "400px",
+    });
   }
 
   onFilterChange(filter: StopwatchFilter) {

@@ -1,11 +1,16 @@
-import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { PrefsService } from "./prefs.service";
 
 @Component({
-  template: ` <p>prefs works!</p> `,
-  styles: ``,
-  imports: [CommonModule],
+  template: `<div class="container">asdasdasd</div>`,
+  styles: `
+    .container{
+      background-color: var(--background);
+      width: 100%;
+      height: 100%;
+    }
+  `,
+  imports: [],
   providers: [PrefsService],
   selector: "app-prefs",
   standalone: true,

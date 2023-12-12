@@ -1,5 +1,4 @@
-import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 
 @Component({
@@ -17,7 +16,9 @@ import { RouterOutlet } from "@angular/router";
   ],
   selector: "app-root",
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent {
   title = "tyme";

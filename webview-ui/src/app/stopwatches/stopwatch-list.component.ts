@@ -1,4 +1,3 @@
-import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { Stopwatch } from "./stopwatch.model";
 import { StopwatchComponent } from "./stopwatch/stopwatch.component";
@@ -11,7 +10,7 @@ import { StopwatchComponent } from "./stopwatch/stopwatch.component";
     </div>
     }
   `,
-  imports: [CommonModule, StopwatchComponent],
+  imports: [StopwatchComponent],
   selector: "app-stopwatch-list",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
