@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform, inject } from "@angular/core";
 import { DateTime, Duration } from "luxon";
 import { Observable, map, startWith, timer } from "rxjs";
-import { Memo, MemoStats } from "./stopwatch.model";
+import { Stopwatch, StopwatchStats } from "./stopwatch.model";
 import { StopwatchStatusService } from "./stopwatch/stopwatch-status.service";
 
 @Pipe({
@@ -11,7 +11,7 @@ import { StopwatchStatusService } from "./stopwatch/stopwatch-status.service";
 export class StopwatchesStatsPipe implements PipeTransform {
   private readonly stopwatchService = inject(StopwatchStatusService);
 
-  transform(stopwatches: Memo[]): Observable<MemoStats> {
+  transform(stopwatches: Stopwatch[]): Observable<StopwatchStats> {
     return timer(10, Duration.fromObject({ minutes: 1 }).toMillis()).pipe(
       startWith([]),
       map(() => ({
@@ -29,7 +29,7 @@ export class StopwatchesStatsPipe implements PipeTransform {
     );
   }
 
-  private totalElapsed(stopwatches: Memo[]) {
+  private totalElapsed(stopwatches: Stopwatch[]) {
     return this.stopwatchService.formatDuration(
       stopwatches
         .map((s) => this.stopwatchService.getElapsed(s).raw)

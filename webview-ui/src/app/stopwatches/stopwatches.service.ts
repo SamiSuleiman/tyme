@@ -2,31 +2,31 @@ import { Injectable } from "@angular/core";
 import { DateTime, Duration } from "luxon";
 import { BehaviorSubject, Observable, shareReplay, take, tap } from "rxjs";
 import { Data } from "../utilities/data";
-import { AddMemo, Memo } from "./stopwatch.model";
+import { AddStopwatch, Stopwatch } from "./stopwatch.model";
 import { genId } from "./utils";
 
 @Injectable({ providedIn: "root" })
 export class StopwatchesService {
   private readonly _data: Data;
 
-  private readonly _stopwatches$ = new BehaviorSubject<Memo[]>([]);
+  private readonly _stopwatches$ = new BehaviorSubject<Stopwatch[]>([]);
   readonly stopwatches$ = this._stopwatches$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
-  readonly bufferStopwatch$ = new BehaviorSubject<Memo | undefined>(undefined);
+  readonly bufferStopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
   constructor() {
     this._data = new Data();
   }
 
   get$() {
-    return this._data.get$<Memo[]>("stopwatches").pipe(
+    return this._data.get$<Stopwatch[]>("stopwatches").pipe(
       tap((vals) => {
         this._stopwatches$.next(vals ?? []);
       })
     );
   }
 
-  add$(stopwatch: AddMemo): Observable<Memo[]> {
-    const newStopwatch: Memo = {
+  add$(stopwatch: AddStopwatch): Observable<Stopwatch[]> {
+    const newStopwatch: Stopwatch = {
       id: genId(),
       name: stopwatch.name,
       desc: stopwatch.desc,
@@ -43,12 +43,12 @@ export class StopwatchesService {
       tap((s) => {
         const stopwatches = [newStopwatch, ...s];
         this._stopwatches$.next(stopwatches);
-        this._data.set<Memo[]>("stopwatches", stopwatches);
+        this._data.set<Stopwatch[]>("stopwatches", stopwatches);
       })
     );
   }
 
-  update$(stopwatches: Memo[]): Observable<Memo[]> {
+  update$(stopwatches: Stopwatch[]): Observable<Stopwatch[]> {
     return this.stopwatches$.pipe(
       take(1),
       tap((s) => {
@@ -64,7 +64,7 @@ export class StopwatchesService {
     );
   }
 
-  remove$(id?: string): Observable<Memo[]> {
+  remove$(id?: string): Observable<Stopwatch[]> {
     return this.stopwatches$.pipe(
       take(1),
       tap((s) => {

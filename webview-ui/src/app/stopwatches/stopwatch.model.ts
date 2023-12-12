@@ -1,6 +1,6 @@
 import { Duration } from "luxon";
 
-export interface Memo {
+export interface Stopwatch {
   id: string;
   name: string;
   desc?: string;
@@ -13,13 +13,13 @@ export interface Memo {
   pauses: number;
 }
 
-export interface AddMemo {
+export interface AddStopwatch {
   name: string;
   desc: string;
   elapsed?: Duration;
 }
 
-export interface MemoStats {
+export interface StopwatchStats {
   runningCount: number;
   pausedCount: number;
   stoppedCount: number;
@@ -28,13 +28,13 @@ export interface MemoStats {
   totalElapsed: string;
 }
 
-export interface MemoFilter {
+export interface StopwatchFilter {
   running: boolean;
   paused: boolean;
   stopped: boolean;
 }
 
-export const defaultFilter: MemoFilter = {
+export const defaultFilter: StopwatchFilter = {
   running: true,
   paused: true,
   stopped: true,

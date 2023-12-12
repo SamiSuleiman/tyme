@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
 import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  OnInit,
-  inject,
+    CUSTOM_ELEMENTS_SCHEMA,
+    ChangeDetectionStrategy,
+    Component,
+    HostListener,
+    OnInit,
+    inject,
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
@@ -14,7 +14,7 @@ import { MatSidenavModule } from "@angular/material/sidenav";
 import { provideVSCodeDesignSystem, vsCodeDivider } from "@vscode/webview-ui-toolkit";
 import { Observable, Subject, switchMap, take, tap } from "rxjs";
 import { StopwatchListComponent } from "./stopwatch-list.component";
-import { Memo, MemoFilter } from "./stopwatch.model";
+import { Stopwatch, StopwatchFilter } from "./stopwatch.model";
 import { StopwatchStatusService } from "./stopwatch/stopwatch-status.service";
 import { UpsertStopwatchComponent } from "./stopwatch/stopwatch-upsert.component";
 import { StopwatchesActionsComponent } from "./stopwatches-actions.component";
@@ -120,10 +120,10 @@ export class StopwatchesComponent implements OnInit {
   private readonly swService = inject(StopwatchesService);
   private readonly swStatusService = inject(StopwatchStatusService);
 
-  private readonly _stopwatches$: Observable<Memo[]> = this.swService.stopwatches$;
-  filteredStopwatches$ = new Subject<Memo[]>();
+  private readonly _stopwatches$: Observable<Stopwatch[]> = this.swService.stopwatches$;
+  filteredStopwatches$ = new Subject<Stopwatch[]>();
 
-  filterChange$ = new Subject<MemoFilter>();
+  filterChange$ = new Subject<StopwatchFilter>();
 
   ngOnInit() {
     this.filterChange$
@@ -149,7 +149,7 @@ export class StopwatchesComponent implements OnInit {
       .subscribe();
   }
 
-  onFilterChange(filter: MemoFilter) {
+  onFilterChange(filter: StopwatchFilter) {
     this.filterChange$.next(filter);
   }
 

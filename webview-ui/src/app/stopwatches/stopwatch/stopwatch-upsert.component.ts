@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
 import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  OnInit,
-  inject,
+    CUSTOM_ELEMENTS_SCHEMA,
+    ChangeDetectionStrategy,
+    Component,
+    HostListener,
+    OnInit,
+    inject,
 } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { allComponents, provideVSCodeDesignSystem } from "@vscode/webview-ui-toolkit";
@@ -13,7 +13,7 @@ import { Duration } from "luxon";
 import { BehaviorSubject, switchMap, take, tap } from "rxjs";
 import { TextAreaComponent } from "src/app/ui/components/text-area.component";
 import { TextFieldComponent } from "src/app/ui/components/text-field.component";
-import { AddMemo, Elapsed, Memo, TimeUnit, timeUnits } from "../stopwatch.model";
+import { AddStopwatch, Elapsed, Stopwatch, TimeUnit, timeUnits } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
 
 provideVSCodeDesignSystem().register(allComponents);
@@ -91,7 +91,7 @@ export class UpsertStopwatchComponent implements OnInit {
 
   elapsedPattern = new RegExp(/\b\d+[smhdw]\b/m);
 
-  stopwatch$ = new BehaviorSubject<Memo | undefined>(undefined);
+  stopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
   stopwatchForm = new FormGroup({
     name: new FormControl<string>("", [Validators.required]),
@@ -124,7 +124,7 @@ export class UpsertStopwatchComponent implements OnInit {
             return this.service.add$({
               ...this.stopwatchForm.value,
               elapsed: this.parseElapsed(this.stopwatchForm.value.elapsed ?? ""),
-            } as AddMemo);
+            } as AddStopwatch);
           return this.service.update$([
             {
               ...s,

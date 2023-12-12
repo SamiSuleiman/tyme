@@ -1,7 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeDivider, vsCodeTag } from "@vscode/webview-ui-toolkit";
-import { Memo } from "./stopwatch.model";
+import { Stopwatch } from "./stopwatch.model";
 import { StopwatchesStatsPipe } from "./stopwatches-stats.pipe";
 
 provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
@@ -56,5 +56,5 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class StopwatchesStatsComponent {
-  @Input({ required: true }) stopwatches: Memo[] = [];
+  @Input({ required: true }) stopwatches: Stopwatch[] = [];
 }
