@@ -8,9 +8,7 @@ import {
   inject,
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
-import { MatButtonModule } from "@angular/material/button";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { MatIconModule } from "@angular/material/icon";
 import { MatSidenavModule } from "@angular/material/sidenav";
 import { provideVSCodeDesignSystem, vsCodeDivider } from "@vscode/webview-ui-toolkit";
 import { Observable, Subject, switchMap, take, tap } from "rxjs";
@@ -95,7 +93,7 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
       }
 
       mat-drawer-content > * {
-        margin: 1rem;
+        margin: 10px;
       }
 
       .stopwatches__list {
@@ -107,9 +105,7 @@ provideVSCodeDesignSystem().register(vsCodeDivider);
   ],
   imports: [
     MatDialogModule,
-    MatButtonModule,
     MatSidenavModule,
-    MatIconModule,
     StopwatchesStatsComponent,
     StopwatchesActionsComponent,
     ReactiveFormsModule,
@@ -160,6 +156,7 @@ export class HomeComponent implements OnInit {
     this.dialog.open(PrefsComponent, {
       width: "400px",
       height: "400px",
+      disableClose: true,
     });
   }
 
