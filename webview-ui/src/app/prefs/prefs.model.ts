@@ -3,6 +3,9 @@ import { StopwatchFilter, defaultFilter } from "../stopwatches/stopwatch.model";
 export interface Prefs {
   filter: StopwatchFilter;
   keybinds: Keybinds;
+  showStats: boolean;
+  showPauses: boolean;
+  confirmDelete: boolean;
 }
 
 export interface Keybinds {
@@ -28,4 +31,7 @@ const defaultKeybinds: Keybinds = {
 export const defaultPrefs: Prefs = {
   filter: defaultFilter,
   keybinds: defaultKeybinds,
+  showPauses: true,
+  showStats: true,
+  confirmDelete: true,
 };
