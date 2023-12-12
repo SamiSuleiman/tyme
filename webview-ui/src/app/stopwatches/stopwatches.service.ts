@@ -11,7 +11,7 @@ export class StopwatchesService {
   readonly stopwatches$ = this._stopwatches$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
   readonly bufferStopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
-  get$() {
+  get$(): Observable<Stopwatch[]> {
     return data.get$<Stopwatch[]>("stopwatches").pipe(
       tap((vals) => {
         this._stopwatches$.next(vals ?? []);

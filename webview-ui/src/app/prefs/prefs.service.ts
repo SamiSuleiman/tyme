@@ -5,15 +5,18 @@ import { Prefs, defaultPrefs } from "./prefs.model";
 
 @Injectable()
 export class PrefsService {
-  private readonly _prefs$ = new BehaviorSubject<Prefs[]>([]);
-  readonly prefs$ = this._prefs$.pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  private readonly _prefs$ = new BehaviorSubject<Prefs | undefined>(undefined);
+  readonly prefs$ = this._prefs$.pipe(
+    filter((prefs): prefs is Prefs => !!prefs),
+    shareReplay({ bufferSize: 1, refCount: true })
+  );
 
   constructor() {
     data
-      .get$<Prefs[]>("prefs")
+      .get$<Prefs>("prefs")
       .pipe(
         filter((prefs) => !prefs),
-        tap(() => data.set("prefs", [defaultPrefs]))
+        tap(() => data.set("prefs", defaultPrefs))
       )
       .subscribe();
   }

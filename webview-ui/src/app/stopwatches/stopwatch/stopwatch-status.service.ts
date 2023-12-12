@@ -27,7 +27,7 @@ export class StopwatchStatusService {
    * @returns the same stopwatches in the correct state.
    * @description stopped stopwatches can't be resumed.
    */
-  stop(stopwatches: Stopwatch[]) {
+  stop(stopwatches: Stopwatch[]): Stopwatch[] {
     return _.cloneDeep(stopwatches.filter((s) => !s.isStopped)).map((stopwatch) => {
       if (stopwatch.isPaused) {
         stopwatch.isPaused = false;
@@ -43,7 +43,7 @@ export class StopwatchStatusService {
    * @param stopwatches ***paused*** stopwatches to resume.
    * @returns the same stopwatches in the correct state.
    */
-  resume(stopwatches: Stopwatch[]) {
+  resume(stopwatches: Stopwatch[]): Stopwatch[] {
     return _.cloneDeep(stopwatches.filter((s) => s.isPaused)).map((stopwatch) => {
       stopwatch.start = DateTime.now().toString();
       stopwatch.isPaused = false;

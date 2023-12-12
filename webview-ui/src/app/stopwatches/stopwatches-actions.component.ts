@@ -79,13 +79,13 @@ export class StopwatchesActionsComponent implements OnInit {
   @Output() readonly removeAll = new EventEmitter<void>();
   @Output() readonly filterChange = new EventEmitter<any>();
 
-  filterGroup = new FormGroup({
+  readonly filterGroup = new FormGroup({
     running: new FormControl(false),
     paused: new FormControl(false),
     stopped: new FormControl(false),
   });
 
-  ngOnInit() {
+  ngOnInit(): void {
     //todo: get from user settings once we have user settings :)
     this.filterGroup.setValue(defaultFilter);
     this.filterGroup.valueChanges
@@ -93,7 +93,7 @@ export class StopwatchesActionsComponent implements OnInit {
       .subscribe((vals) => this.filterChange.emit(vals as StopwatchFilter));
   }
 
-  getControlVal(key: string) {
+  getControlVal(key: string): boolean {
     return this.filterGroup.get(key)?.value;
   }
 }

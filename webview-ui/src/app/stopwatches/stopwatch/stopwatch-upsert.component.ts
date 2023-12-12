@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
 import {
-    CUSTOM_ELEMENTS_SCHEMA,
-    ChangeDetectionStrategy,
-    Component,
-    HostListener,
-    OnInit,
-    inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  OnInit,
+  inject,
 } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { allComponents, provideVSCodeDesignSystem } from "@vscode/webview-ui-toolkit";
@@ -99,7 +99,7 @@ export class UpsertStopwatchComponent implements OnInit {
     elapsed: new FormControl<string>(""),
   });
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.service.bufferStopwatch$
       .pipe(
         tap((s) => {
@@ -114,7 +114,7 @@ export class UpsertStopwatchComponent implements OnInit {
   }
 
   @HostListener("window:keydown.alt.enter", ["$event"])
-  onConfirm() {
+  onConfirm(): void {
     if (this.stopwatchForm.invalid) return;
     this.stopwatch$
       .pipe(
@@ -141,16 +141,16 @@ export class UpsertStopwatchComponent implements OnInit {
       .subscribe();
   }
 
-  onCancelEdit() {
+  onCancelEdit(): void {
     this.service.bufferStopwatch$.next(undefined);
     this.resetForm();
   }
 
-  private resetForm() {
+  private resetForm(): void {
     this.stopwatchForm.reset();
   }
 
-  private parseElapsed(elapsed: string) {
+  private parseElapsed(elapsed: string): Duration {
     return elapsed
       .split(" ")
       .filter((candidate) => this.elapsedPattern.test(candidate))

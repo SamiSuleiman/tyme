@@ -110,23 +110,23 @@ export class StopwatchComponent {
 
   @Input({ required: true }) stopwatch: Stopwatch;
 
-  onEdit() {
+  onEdit(): void {
     this.service.bufferStopwatch$.next(this.stopwatch);
   }
 
-  onRemove() {
+  onRemove(): void {
     this.service.remove$(this.stopwatch?.id).subscribe();
   }
 
-  onStop() {
+  onStop(): void {
     this.service.update$(this.statusService.stop([this.stopwatch])).subscribe();
   }
 
-  onPause() {
+  onPause(): void {
     this.service.update$(this.statusService.pause([this.stopwatch])).subscribe();
   }
 
-  onResume() {
+  onResume(): void {
     this.service.update$(this.statusService.resume([this.stopwatch])).subscribe();
   }
 }

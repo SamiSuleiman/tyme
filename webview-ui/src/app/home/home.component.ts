@@ -128,7 +128,7 @@ export class HomeComponent implements OnInit {
 
   filterChange$ = new Subject<StopwatchFilter>();
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.filterChange$
       .pipe(
         switchMap((filter) =>
@@ -152,7 +152,7 @@ export class HomeComponent implements OnInit {
       .subscribe();
   }
 
-  onOpenPrefs() {
+  onOpenPrefs(): void {
     this.dialog.open(PrefsComponent, {
       width: "400px",
       height: "400px",
@@ -160,17 +160,17 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onFilterChange(filter: StopwatchFilter) {
+  onFilterChange(filter: StopwatchFilter): void {
     this.filterChange$.next(filter);
   }
 
   @HostListener("window:keydown.alt.backspace")
-  onRemoveAll() {
+  onRemoveAll(): void {
     this.swService.remove$().subscribe();
   }
 
   @HostListener("window:keydown.alt.p")
-  onPauseAll() {
+  onPauseAll(): void {
     this._stopwatches$
       .pipe(
         take(1),
@@ -186,7 +186,7 @@ export class HomeComponent implements OnInit {
   }
 
   @HostListener("window:keydown.alt.s")
-  onStopAll() {
+  onStopAll(): void {
     this._stopwatches$
       .pipe(
         take(1),
@@ -198,7 +198,7 @@ export class HomeComponent implements OnInit {
   }
 
   @HostListener("window:keydown.alt.r")
-  onResumeAll() {
+  onResumeAll(): void {
     this._stopwatches$
       .pipe(
         take(1),
