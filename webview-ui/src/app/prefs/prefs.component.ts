@@ -11,6 +11,8 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatDialogModule } from "@angular/material/dialog";
 import { take, tap } from "rxjs";
 import { CheckboxComponent } from "../ui/components/checkbox.component";
+import { KeybindSelectionInputComponent } from "../ui/components/keybind-selection-input.component";
+import { Prefs } from "./prefs.model";
 import { PrefsService } from "./prefs.service";
 
 @Component({
@@ -61,6 +63,10 @@ import { PrefsService } from "./prefs.service";
             ></app-checkbox>
             <vscode-divider></vscode-divider>
             <h3>Keybinds</h3>
+            <app-keybind-selection-input
+              label="Delete all"
+              [keybindControl]="getControl('keybinds', 'deleteAll')"
+            ></app-keybind-selection-input>
           </div>
         </form>
       </mat-dialog-content>
@@ -86,7 +92,13 @@ import { PrefsService } from "./prefs.service";
       }
     }
   `,
-  imports: [MatDialogModule, MatButtonModule, ReactiveFormsModule, CheckboxComponent],
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    CheckboxComponent,
+    KeybindSelectionInputComponent,
+  ],
   providers: [PrefsService],
   selector: "app-prefs",
   standalone: true,
@@ -132,6 +144,7 @@ export class PrefsComponent implements OnInit {
 
   onSubmit(): void {
     console.log(this.prefsForm.value);
+    this.perfsService.update(this.prefsForm.value as Prefs);
   }
   // @Input()
   // public on: string;
