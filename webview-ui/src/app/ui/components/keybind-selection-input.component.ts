@@ -19,7 +19,9 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
 @Component({
   template: `
     <div>
-      <p>{{ label }}: {{ keybindControl.value }}</p>
+      <p>
+        {{ label }}: <code>{{ keybindControl.value }}</code>
+      </p>
       <vscode-text-field
         (focusout)="endListening()"
         (click)="startListening()"
