@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { Prefs } from "../prefs/prefs.model";
 import { Stopwatch } from "./stopwatch.model";
 import { StopwatchComponent } from "./stopwatch/stopwatch.component";
 
@@ -6,7 +7,7 @@ import { StopwatchComponent } from "./stopwatch/stopwatch.component";
   template: `
     @for (item of stopwatches; track item) {
     <div>
-      <app-stopwatch [stopwatch]="item"></app-stopwatch>
+      <app-stopwatch [prefs]="prefs" [stopwatch]="item"></app-stopwatch>
     </div>
     }
   `,
@@ -17,4 +18,5 @@ import { StopwatchComponent } from "./stopwatch/stopwatch.component";
 })
 export class StopwatchListComponent {
   @Input({ required: true }) stopwatches: Stopwatch[] = [];
+  @Input({ required: true }) prefs: Prefs;
 }

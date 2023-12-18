@@ -30,6 +30,12 @@ import { PrefsService } from "./prefs.service";
             >
             </app-checkbox>
             <app-checkbox
+              label="Show bulk actions"
+              formControlName="showBulkActions"
+              [checked]="getControl(undefined, 'showBulkActions').value"
+            >
+            </app-checkbox>
+            <app-checkbox
               label="Show pauses"
               formControlName="showPauses"
               [checked]="getControl(undefined, 'showPauses').value"
@@ -128,7 +134,6 @@ import { PrefsService } from "./prefs.service";
     CheckboxComponent,
     KeybindSelectionInputComponent,
   ],
-  providers: [PrefsService],
   selector: "app-prefs",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -156,6 +161,7 @@ export class PrefsComponent implements OnInit {
     showStats: new FormControl(false),
     showPauses: new FormControl(false),
     confirmDelete: new FormControl(false),
+    showBulkActions: new FormControl(false),
   });
 
   ngOnInit(): void {

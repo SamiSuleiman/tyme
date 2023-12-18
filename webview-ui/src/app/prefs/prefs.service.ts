@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, filter, shareReplay, tap } from "rxjs";
 import { data } from "../utilities/data";
 import { Prefs, defaultPrefs } from "./prefs.model";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class PrefsService {
   private readonly _prefs$ = new BehaviorSubject<Prefs | undefined>(undefined);
   readonly prefs$ = this._prefs$.pipe(

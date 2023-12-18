@@ -10,8 +10,10 @@ import {
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatSidenavModule } from "@angular/material/sidenav";
+import { provideVSCodeDesignSystem, vsCodeProgressRing } from "@vscode/webview-ui-toolkit";
 import { Observable, Subject, switchMap, take, tap } from "rxjs";
 import { PrefsComponent } from "../prefs/prefs.component";
+import { PrefsService } from "../prefs/prefs.service";
 import { StopwatchListComponent } from "../stopwatches/stopwatch-list.component";
 import { Stopwatch, StopwatchFilter } from "../stopwatches/stopwatch.model";
 import { StopwatchStatusService } from "../stopwatches/stopwatch/stopwatch-status.service";
@@ -20,54 +22,66 @@ import { StopwatchesActionsComponent } from "../stopwatches/stopwatches-actions.
 import { StopwatchesStatsComponent } from "../stopwatches/stopwatches-stats.component";
 import { StopwatchesService } from "../stopwatches/stopwatches.service";
 
+provideVSCodeDesignSystem().register(vsCodeProgressRing);
+
 @Component({
   template: `
-    <mat-drawer-container [hasBackdrop]="false">
-      <mat-drawer #drawer mode="side" opened>
-        <div class="left">
-          <app-upsert-stopwatch></app-upsert-stopwatch>
-        </div>
-      </mat-drawer>
-      <mat-drawer-content>
-        <vscode-button appearance="icon" (click)="drawer.toggle()">
-          @if(drawer.opened){
-          <span class="icon"><i [class]="'codicon codicon-chevron-left'"></i></span>
-          } @else{
-          <span class="icon"><i [class]="'codicon codicon-chevron-right'"></i></span>
-          }
-        </vscode-button>
-        <vscode-button appearance="icon" (click)="onOpenPrefs()">
-          <span class="icon"><i [class]="'codicon codicon-settings'"></i></span>
-        </vscode-button>
+    <div class="container">
+      @if(prefs$ | async; as prefs) {
+      <mat-drawer-container [hasBackdrop]="false">
+        <mat-drawer #drawer mode="side" opened>
+          <div class="left">
+            <app-upsert-stopwatch></app-upsert-stopwatch>
+          </div>
+        </mat-drawer>
+        <mat-drawer-content>
+          <vscode-button appearance="icon" (click)="drawer.toggle()">
+            @if(drawer.opened){
+            <span class="icon"><i [class]="'codicon codicon-chevron-left'"></i></span>
+            } @else{
+            <span class="icon"><i [class]="'codicon codicon-chevron-right'"></i></span>
+            }
+          </vscode-button>
+          <vscode-button appearance="icon" (click)="onOpenPrefs()">
+            <span class="icon"><i [class]="'codicon codicon-settings'"></i></span>
+          </vscode-button>
 
-        @if ({ stopwatches: filteredStopwatches$ | async }; as value) {
-        <div>
+          @if ({ stopwatches: filteredStopwatches$ | async }; as value) {
           <div>
-            <app-stopwatches-stats [stopwatches]="value.stopwatches ?? []"></app-stopwatches-stats>
-          </div>
-          <div>
-            <app-stopwatches-actions
-              (stopAll)="onStopAll()"
-              (resumeAll)="onResumeAll()"
-              (pauseAll)="onPauseAll()"
-              (removeAll)="onRemoveAll()"
-              (filterChange)="onFilterChange($event)"
-            ></app-stopwatches-actions>
-          </div>
-          @if (value.stopwatches && value.stopwatches.length) {
-          <div class="stopwatches__list">
-            <app-stopwatch-list [stopwatches]="value.stopwatches"></app-stopwatch-list>
-          </div>
-          } @else {
-          <h3>empty</h3>
-          }
-          <ng-template #empty>
+            @if(prefs.showStats){
+            <div>
+              <app-stopwatches-stats
+                [stopwatches]="value.stopwatches ?? []"
+              ></app-stopwatches-stats>
+            </div>
+            } @if(prefs.showBulkActions){
+            <div>
+              <app-stopwatches-actions
+                (stopAll)="onStopAll()"
+                (resumeAll)="onResumeAll()"
+                (pauseAll)="onPauseAll()"
+                (removeAll)="onRemoveAll()"
+                (filterChange)="onFilterChange($event)"
+              ></app-stopwatches-actions>
+            </div>
+            } @if (value.stopwatches && value.stopwatches.length) {
+            <div class="stopwatches__list">
+              <app-stopwatch-list
+                [prefs]="prefs"
+                [stopwatches]="value.stopwatches"
+              ></app-stopwatch-list>
+            </div>
+            } @else {
             <h3>empty</h3>
-          </ng-template>
-        </div>
-        }
-      </mat-drawer-content>
-    </mat-drawer-container>
+            }
+          </div>
+          }
+        </mat-drawer-content>
+      </mat-drawer-container>
+      } @else {
+      <vscode-progress-ring></vscode-progress-ring>
+      }
+    </div>
   `,
   styles: [
     `
@@ -98,6 +112,14 @@ import { StopwatchesService } from "../stopwatches/stopwatches.service";
         max-height: 80vh;
         overflow: scroll;
       }
+
+      .container {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+      }
     `,
   ],
   imports: [
@@ -121,6 +143,8 @@ export class HomeComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
 
   private readonly _stopwatches$: Observable<Stopwatch[]> = this.swService.stopwatches$;
+
+  prefs$ = inject(PrefsService).prefs$;
   filteredStopwatches$ = new Subject<Stopwatch[]>();
 
   filterChange$ = new Subject<StopwatchFilter>();

@@ -5,6 +5,7 @@ export interface Prefs {
   keybinds: Keybinds;
   showStats: boolean;
   showPauses: boolean;
+  showBulkActions: boolean;
   confirmDelete: boolean;
 }
 
@@ -33,5 +34,13 @@ export const defaultPrefs: Prefs = {
   keybinds: defaultKeybinds,
   showPauses: true,
   showStats: true,
+  showBulkActions: true,
   confirmDelete: true,
 };
+
+/**
+ * ! right now we only take the following prefs into account:
+ * - show stats
+ * - show bulk actions
+ * - show pauses
+ * */

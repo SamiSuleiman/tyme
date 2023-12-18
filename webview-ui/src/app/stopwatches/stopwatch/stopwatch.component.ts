@@ -7,6 +7,7 @@ import {
   inject,
 } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeTag } from "@vscode/webview-ui-toolkit";
+import { Prefs } from "src/app/prefs/prefs.model";
 import { FormattedDatePipe } from "../../ui/pipes/formatted-date.pipe";
 import { Stopwatch } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
@@ -44,7 +45,9 @@ provideVSCodeDesignSystem().register(vsCodeTag);
         </div>
         <div class="tags">
           <vscode-tag>{{ stopwatch | stopwatchStatus }}</vscode-tag>
+          @if(prefs.showPauses){
           <vscode-tag>{{ stopwatch.pauses }} pauses</vscode-tag>
+          }
         </div>
         <h3>
           {{
@@ -109,6 +112,7 @@ export class StopwatchComponent {
   private readonly statusService = inject(StopwatchStatusService);
 
   @Input({ required: true }) stopwatch: Stopwatch;
+  @Input({ required: true }) prefs: Prefs;
 
   onEdit(): void {
     this.service.bufferStopwatch$.next(this.stopwatch);
