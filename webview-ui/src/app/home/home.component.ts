@@ -10,7 +10,6 @@ import {
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { MatSidenavModule } from "@angular/material/sidenav";
-import { provideVSCodeDesignSystem, vsCodeDivider } from "@vscode/webview-ui-toolkit";
 import { Observable, Subject, switchMap, take, tap } from "rxjs";
 import { PrefsComponent } from "../prefs/prefs.component";
 import { StopwatchListComponent } from "../stopwatches/stopwatch-list.component";
@@ -20,8 +19,6 @@ import { UpsertStopwatchComponent } from "../stopwatches/stopwatch/stopwatch-ups
 import { StopwatchesActionsComponent } from "../stopwatches/stopwatches-actions.component";
 import { StopwatchesStatsComponent } from "../stopwatches/stopwatches-stats.component";
 import { StopwatchesService } from "../stopwatches/stopwatches.service";
-
-provideVSCodeDesignSystem().register(vsCodeDivider);
 
 @Component({
   template: `
@@ -154,8 +151,8 @@ export class HomeComponent implements OnInit {
 
   onOpenPrefs(): void {
     this.dialog.open(PrefsComponent, {
-      width: "400px",
-      height: "400px",
+      width: "800px",
+      // height: "400px",
       disableClose: true,
     });
   }
