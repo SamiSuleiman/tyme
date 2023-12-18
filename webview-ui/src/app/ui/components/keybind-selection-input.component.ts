@@ -1,12 +1,16 @@
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
+  DestroyRef,
   HostListener,
   Input,
   OnInit,
+  inject,
   signal,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeTextField } from "@vscode/webview-ui-toolkit";
 
@@ -15,7 +19,7 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
 @Component({
   template: `
     <div>
-      <p>{{ label }}</p>
+      <p>{{ label }}: {{ keybindControl.value }}</p>
       <vscode-text-field
         (focusout)="endListening()"
         (click)="startListening()"
@@ -25,25 +29,20 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
         readonly
       >
         <span slot="start" class="{{ 'codicon codicon-record-keys' }}"></span>
-        Current Keybind: {{ keybindSelectorCurrVal() }}
       </vscode-text-field>
     </div>
   `,
   styles: `
     p {
-      margin: 0;
+      margin: 0px;
       font-size: 0.75rem;
     }
 
     vscode-text-field { 
-      display: flex;
-      gap: 6px;
-      caret-color: transparent;
-      align-items: center;
-
-    &::part(control) {
-      cursor: pointer; 
-    }
+      &::part(control) {
+        width: 11rem;
+        cursor: pointer; 
+      }
  }
 
   `,
@@ -53,15 +52,19 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class KeybindSelectionInputComponent implements OnInit {
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
+
   @Input({ required: true }) label: string;
-  @Input({ required: true }) keybindControl: FormControl;
+  @Input({ required: true }) keybindControl: FormControl<string>;
 
   isListening = signal(false);
   keybindSelectorPlaceholder = signal("Press here to start listening");
-  keybindSelectorCurrVal = signal("");
 
   ngOnInit(): void {
-    this.keybindSelectorCurrVal.set(this.keybindControl.value);
+    this.keybindControl.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.cdr.detectChanges());
   }
 
   startListening() {
@@ -86,18 +89,11 @@ export class KeybindSelectionInputComponent implements OnInit {
         ? null
         : event.key;
 
-    const modifier = event.ctrlKey
-      ? "control"
-      : event.altKey
-      ? "alt"
-      : event.metaKey
-      ? "meta"
-      : null;
+    if (!(event.ctrlKey || event.metaKey) || !key) return;
 
-    if (!modifier || !key) return;
-
-    this.keybindSelectorCurrVal.set(`${modifier}+${key}`);
-    this.keybindControl.setValue(`${modifier}+${key}`);
+    this.keybindControl.setValue(
+      `${event.ctrlKey ? "control." : ""}${event.metaKey ? "meta." : ""}${key}`
+    );
     this.endListening();
   }
 

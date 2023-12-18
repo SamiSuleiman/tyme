@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import { MatDialogModule } from "@angular/material/dialog";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { take, tap } from "rxjs";
 import { CheckboxComponent } from "../ui/components/checkbox.component";
 import { KeybindSelectionInputComponent } from "../ui/components/keybind-selection-input.component";
@@ -62,11 +62,35 @@ import { PrefsService } from "./prefs.service";
               [checked]="getControl('filter', 'stopped').value"
             ></app-checkbox>
             <vscode-divider></vscode-divider>
-            <h3>Keybinds</h3>
-            <app-keybind-selection-input
-              label="Delete all"
-              [keybindControl]="getControl('keybinds', 'deleteAll')"
-            ></app-keybind-selection-input>
+            <div>
+              <h3>Keybinds</h3>
+              <div class="selection-inputs__container">
+                <app-keybind-selection-input
+                  label="Delete all"
+                  [keybindControl]="getControl('keybinds', 'deleteAll')"
+                ></app-keybind-selection-input>
+                <app-keybind-selection-input
+                  label="Pause all"
+                  [keybindControl]="getControl('keybinds', 'pauseAll')"
+                ></app-keybind-selection-input>
+                <app-keybind-selection-input
+                  label="Resume all"
+                  [keybindControl]="getControl('keybinds', 'resumeAll')"
+                ></app-keybind-selection-input>
+                <app-keybind-selection-input
+                  label="Stop all"
+                  [keybindControl]="getControl('keybinds', 'stopAll')"
+                ></app-keybind-selection-input>
+                <app-keybind-selection-input
+                  label="Toggle drawer"
+                  [keybindControl]="getControl('keybinds', 'toggleDrawer')"
+                ></app-keybind-selection-input>
+                <app-keybind-selection-input
+                  label="Submit"
+                  [keybindControl]="getControl('keybinds', 'submit')"
+                ></app-keybind-selection-input>
+              </div>
+            </div>
           </div>
         </form>
       </mat-dialog-content>
@@ -90,6 +114,11 @@ import { PrefsService } from "./prefs.service";
       &, & > * {
         background-color: var(--background);
       }
+
+      .selection-inputs__container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
     }
   `,
   imports: [
@@ -106,6 +135,7 @@ import { PrefsService } from "./prefs.service";
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PrefsComponent implements OnInit {
+  private readonly matDialog = inject(MatDialog);
   private readonly perfsService = inject(PrefsService);
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -115,7 +145,6 @@ export class PrefsComponent implements OnInit {
       paused: new FormControl(false),
       stopped: new FormControl(false),
     }),
-    // todo: make a "keybind selection" component to handle this
     keybinds: new FormGroup({
       deleteAll: new FormControl(""),
       pauseAll: new FormControl(""),
@@ -123,7 +152,6 @@ export class PrefsComponent implements OnInit {
       stopAll: new FormControl(""),
       toggleDrawer: new FormControl(""),
       submit: new FormControl(""),
-      confirmDelete: new FormControl(false),
     }),
     showStats: new FormControl(false),
     showPauses: new FormControl(false),
@@ -143,8 +171,8 @@ export class PrefsComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.prefsForm.value);
     this.perfsService.update(this.prefsForm.value as Prefs);
+    this.matDialog.closeAll();
   }
   // @Input()
   // public on: string;
