@@ -13,6 +13,7 @@ import {
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeTextField } from "@vscode/webview-ui-toolkit";
+import { KeybindsService } from "../../prefs/keybinds.service";
 
 provideVSCodeDesignSystem().register(vsCodeTextField);
 
@@ -48,6 +49,7 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
  }
 
   `,
+  providers: [KeybindsService],
   selector: "app-keybind-selection-input",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,6 +58,7 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
 export class KeybindSelectionInputComponent implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly keybindsService = inject(KeybindsService);
 
   @Input({ required: true }) label: string;
   @Input({ required: true }) keybindControl: FormControl<string>;
@@ -82,20 +85,10 @@ export class KeybindSelectionInputComponent implements OnInit {
     event.stopImmediatePropagation();
     event.stopImmediatePropagation();
 
-    const key =
-      event.key === "Alt"
-        ? null
-        : event.key === "Control"
-        ? null
-        : event.key === "Meta"
-        ? null
-        : event.key;
+    const keybind = this.keybindsService.getKeybindFromKeyboardEvent(event);
+    if (!keybind) return;
 
-    if (!(event.ctrlKey || event.metaKey) || !key) return;
-
-    this.keybindControl.setValue(
-      `${event.ctrlKey ? "control." : ""}${event.metaKey ? "meta." : ""}${key}`
-    );
+    this.keybindControl.setValue(keybind);
     this.endListening();
   }
 

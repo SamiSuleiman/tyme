@@ -173,21 +173,6 @@ export class PrefsComponent implements OnInit {
     this.perfsService.update(this.prefsForm.value as Prefs);
     this.matDialog.closeAll();
   }
-  // @Input()
-  // public on: string;
-  // private dispose: Function;
-  // constructor(
-  //   private renderer: Renderer,
-  //   private elementRef: ElementRef
-  // ) {}
-  // ngOnInit() {
-  //   this.dispose = this.renderer.listen(this.elementRef.nativeElement, this.on, (e) =>
-  //     console.log(e)
-  //   );
-  // }
-  // ngOnDestroy() {
-  //   this.dispose();
-  // }
 
   getControl(group?: string, key?: string): FormControl {
     return (group ? this.prefsForm.get(group) : this.prefsForm)?.get(key ?? "") as FormControl;

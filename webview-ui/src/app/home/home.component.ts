@@ -2,16 +2,18 @@ import { AsyncPipe } from "@angular/common";
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  HostListener,
   OnInit,
+  ViewChild,
   inject,
 } from "@angular/core";
 import { ReactiveFormsModule } from "@angular/forms";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
-import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatDrawer, MatSidenavModule } from "@angular/material/sidenav";
 import { provideVSCodeDesignSystem, vsCodeProgressRing } from "@vscode/webview-ui-toolkit";
 import { Observable, Subject, switchMap, take, tap } from "rxjs";
+import { KeybindPressEvent, KeybindsService } from "../prefs/keybinds.service";
 import { PrefsComponent } from "../prefs/prefs.component";
 import { PrefsService } from "../prefs/prefs.service";
 import { StopwatchListComponent } from "../stopwatches/stopwatch-list.component";
@@ -133,17 +135,22 @@ provideVSCodeDesignSystem().register(vsCodeProgressRing);
     UpsertStopwatchComponent,
     AsyncPipe,
   ],
+  providers: [KeybindsService],
   selector: "app-home",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomeComponent implements OnInit {
+  private readonly keybindsService = inject(KeybindsService);
   private readonly swService = inject(StopwatchesService);
   private readonly swStatusService = inject(StopwatchStatusService);
   private readonly dialog = inject(MatDialog);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   private readonly _stopwatches$: Observable<Stopwatch[]> = this.swService.stopwatches$;
+
+  @ViewChild(MatDrawer) drawer: MatDrawer;
 
   prefs$ = inject(PrefsService).prefs$;
   filteredStopwatches$ = new Subject<Stopwatch[]>();
@@ -151,6 +158,8 @@ export class HomeComponent implements OnInit {
   filterChange$ = new Subject<StopwatchFilter>();
 
   ngOnInit(): void {
+    this.initKeybindsListeners().subscribe();
+
     this.filterChange$
       .pipe(
         switchMap((filter) =>
@@ -177,7 +186,6 @@ export class HomeComponent implements OnInit {
   onOpenPrefs(): void {
     this.dialog.open(PrefsComponent, {
       width: "800px",
-      // height: "400px",
       disableClose: true,
     });
   }
@@ -186,12 +194,10 @@ export class HomeComponent implements OnInit {
     this.filterChange$.next(filter);
   }
 
-  @HostListener("window:keydown.alt.backspace")
   onRemoveAll(): void {
     this.swService.remove$().subscribe();
   }
 
-  @HostListener("window:keydown.alt.p")
   onPauseAll(): void {
     this._stopwatches$
       .pipe(
@@ -207,7 +213,6 @@ export class HomeComponent implements OnInit {
       .subscribe();
   }
 
-  @HostListener("window:keydown.alt.s")
   onStopAll(): void {
     this._stopwatches$
       .pipe(
@@ -219,7 +224,6 @@ export class HomeComponent implements OnInit {
       .subscribe();
   }
 
-  @HostListener("window:keydown.alt.r")
   onResumeAll(): void {
     this._stopwatches$
       .pipe(
@@ -231,5 +235,45 @@ export class HomeComponent implements OnInit {
         )
       )
       .subscribe();
+  }
+
+  private initKeybindsListeners(): Observable<KeybindPressEvent> {
+    return this.prefs$.pipe(
+      switchMap(({ keybinds }) => {
+        return this.keybindsService.listenToKeybinds$().pipe(
+          tap((pressed) => {
+            switch (pressed.keybind) {
+              case keybinds.stopAll:
+                executeAction(this.onStopAll.bind(this));
+                break;
+              case keybinds.pauseAll:
+                executeAction(this.onPauseAll.bind(this));
+                break;
+              case keybinds.resumeAll:
+                executeAction(this.onResumeAll.bind(this));
+                break;
+              case keybinds.deleteAll:
+                executeAction(this.onRemoveAll.bind(this));
+                break;
+              case keybinds.submit:
+                break;
+              case keybinds.toggleDrawer:
+                this.drawer.toggle();
+                this.cdr.detectChanges();
+                break;
+              default:
+                break;
+            }
+
+            function executeAction(action: Function): void {
+              pressed.event.preventDefault();
+              pressed.event.stopPropagation();
+              pressed.event.stopImmediatePropagation();
+              action();
+            }
+          })
+        );
+      })
+    );
   }
 }

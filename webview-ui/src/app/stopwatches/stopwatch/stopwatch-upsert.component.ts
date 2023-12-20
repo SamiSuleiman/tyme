@@ -1,18 +1,14 @@
 import { CommonModule } from "@angular/common";
-import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  OnInit,
-  inject,
-} from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { allComponents, provideVSCodeDesignSystem } from "@vscode/webview-ui-toolkit";
 import { Duration } from "luxon";
 import { BehaviorSubject, switchMap, take, tap } from "rxjs";
-import { TextAreaComponent } from "src/app/ui/components/text-area.component";
-import { TextFieldComponent } from "src/app/ui/components/text-field.component";
+import { KeybindsService } from "../../prefs/keybinds.service";
+import { PrefsService } from "../../prefs/prefs.service";
+import { TextAreaComponent } from "../../ui/components/text-area.component";
+import { TextFieldComponent } from "../../ui/components/text-field.component";
 import { AddStopwatch, Elapsed, Stopwatch, TimeUnit, timeUnits } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
 
@@ -86,8 +82,10 @@ provideVSCodeDesignSystem().register(allComponents);
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class UpsertStopwatchComponent implements OnInit {
+export class UpsertStopwatchComponent {
   private readonly service = inject(StopwatchesService);
+  private readonly keybindsService = inject(KeybindsService);
+  private readonly prefs$ = inject(PrefsService).prefs$;
 
   elapsedPattern = new RegExp(/\b\d+[smhdw]\b/m);
 
@@ -99,7 +97,19 @@ export class UpsertStopwatchComponent implements OnInit {
     elapsed: new FormControl<string>(""),
   });
 
-  ngOnInit(): void {
+  constructor() {
+    this.prefs$
+      .pipe(
+        switchMap(({ keybinds }) => {
+          console.log(keybinds);
+          return this.keybindsService.listenToKeybinds$([keybinds.submit]).pipe(
+            tap(() => this.onConfirm()),
+            takeUntilDestroyed()
+          );
+        })
+      )
+      .subscribe();
+
     this.service.bufferStopwatch$
       .pipe(
         tap((s) => {
@@ -108,12 +118,12 @@ export class UpsertStopwatchComponent implements OnInit {
             this.resetForm();
             this.stopwatchForm.patchValue({ name: s.name, desc: s.desc });
           }
-        })
+        }),
+        takeUntilDestroyed()
       )
       .subscribe();
   }
 
-  @HostListener("window:keydown.alt.enter", ["$event"])
   onConfirm(): void {
     if (this.stopwatchForm.invalid) return;
     this.stopwatch$
