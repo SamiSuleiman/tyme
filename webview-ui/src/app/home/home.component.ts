@@ -57,6 +57,7 @@ provideVSCodeDesignSystem().register(vsCodeProgressRing);
             } @if(prefs.showBulkActions){
             <div>
               <app-stopwatches-actions
+                [prefs]="prefs"
                 (stopAll)="onStopAll()"
                 (resumeAll)="onResumeAll()"
                 (pauseAll)="onPauseAll()"

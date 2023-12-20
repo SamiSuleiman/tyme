@@ -12,11 +12,9 @@ export class StopwatchesService {
   readonly bufferStopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
   get$(): Observable<Stopwatch[]> {
-    return data.get$<Stopwatch[]>("stopwatches").pipe(
-      tap((vals) => {
-        this._stopwatches$.next(vals ?? []);
-      })
-    );
+    return data
+      .get$<Stopwatch[]>("stopwatches")
+      .pipe(tap((vals) => this._stopwatches$.next(vals ?? [])));
   }
 
   add$(stopwatch: AddStopwatch): Observable<Stopwatch[]> {
