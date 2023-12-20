@@ -41,12 +41,6 @@ import { PrefsService } from "./prefs.service";
               [checked]="getControl(undefined, 'showPauses').value"
             >
             </app-checkbox>
-            <app-checkbox
-              label="Confirm delete"
-              formControlName="confirmDelete"
-              [checked]="getControl(undefined, 'confirmDelete').value"
-            >
-            </app-checkbox>
           </div>
           <vscode-divider></vscode-divider>
           <div formGroupName="filter">
@@ -160,7 +154,6 @@ export class PrefsComponent implements OnInit {
     }),
     showStats: new FormControl(false),
     showPauses: new FormControl(false),
-    confirmDelete: new FormControl(false),
     showBulkActions: new FormControl(false),
   });
 

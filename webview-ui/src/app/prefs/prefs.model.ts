@@ -6,7 +6,6 @@ export interface Prefs {
   showStats: boolean;
   showPauses: boolean;
   showBulkActions: boolean;
-  confirmDelete: boolean;
 }
 
 export interface Keybinds {
@@ -15,7 +14,6 @@ export interface Keybinds {
   resumeAll: string;
   stopAll: string;
   toggleDrawer: string;
-  confirmDelete: boolean;
   submit: string;
 }
 
@@ -25,7 +23,6 @@ const defaultKeybinds: Keybinds = {
   resumeAll: "alt.r",
   stopAll: "alt.enter.s",
   toggleDrawer: "alt.d",
-  confirmDelete: true,
   submit: "alt.enter",
 };
 
@@ -35,12 +32,4 @@ export const defaultPrefs: Prefs = {
   showPauses: true,
   showStats: true,
   showBulkActions: true,
-  confirmDelete: true,
 };
-
-/**
- * ! right now we only take the following prefs into account:
- * - show stats
- * - show bulk actions
- * - show pauses
- * */
