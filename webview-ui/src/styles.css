@@ -17,3 +17,7 @@ body {
   gap: 1rem;
   align-items: center;
 }
+
+.hidden {
+  display: none;
+}

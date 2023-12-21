@@ -92,7 +92,10 @@ export class StopwatchesActionsComponent {
   constructor() {
     this.prefs$
       .pipe(
-        tap((prefs) => this.filterGroup.setValue(prefs.filter)),
+        tap((prefs) => {
+          console.log(prefs);
+          this.filterGroup.setValue(prefs.filter);
+        }),
         switchMap(() =>
           this.filterGroup.valueChanges.pipe(
             tap((valChanges) => this.filterChange.emit(valChanges as StopwatchFilter))

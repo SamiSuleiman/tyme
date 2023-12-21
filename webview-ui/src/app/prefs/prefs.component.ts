@@ -8,7 +8,7 @@ import {
 } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
 import { take, tap } from "rxjs";
 import { CheckboxComponent } from "../ui/components/checkbox.component";
 import { KeybindSelectionInputComponent } from "../ui/components/keybind-selection-input.component";
@@ -134,7 +134,7 @@ import { PrefsService } from "./prefs.service";
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PrefsComponent implements OnInit {
-  private readonly matDialog = inject(MatDialog);
+  private readonly matDialog = inject(MatDialogRef);
   private readonly perfsService = inject(PrefsService);
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -170,8 +170,7 @@ export class PrefsComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.perfsService.update(this.prefsForm.value as Prefs);
-    this.matDialog.closeAll();
+    if (!this.prefsForm.pristine) this.perfsService.update(this.prefsForm.value as Prefs);
   }
 
   getControl(group?: string, key?: string): FormControl {

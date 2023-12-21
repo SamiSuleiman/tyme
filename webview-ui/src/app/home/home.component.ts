@@ -1,4 +1,4 @@
-import { AsyncPipe } from "@angular/common";
+import { AsyncPipe, NgClass } from "@angular/common";
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
@@ -50,14 +50,12 @@ provideVSCodeDesignSystem().register(vsCodeProgressRing);
 
           @if ({ stopwatches: filteredStopwatches$ | async }; as value) {
           <div>
-            @if(prefs.showStats){
-            <div>
+            <div [ngClass]="{ hidden: !prefs.showStats }">
               <app-stopwatches-stats
                 [stopwatches]="value.stopwatches ?? []"
               ></app-stopwatches-stats>
             </div>
-            } @if(prefs.showBulkActions){
-            <div>
+            <div [ngClass]="{ hidden: !prefs.showBulkActions }">
               <app-stopwatches-actions
                 [prefs]="prefs"
                 (stopAll)="onStopAll()"
@@ -67,7 +65,7 @@ provideVSCodeDesignSystem().register(vsCodeProgressRing);
                 (filterChange)="onFilterChange($event)"
               ></app-stopwatches-actions>
             </div>
-            } @if (value.stopwatches && value.stopwatches.length) {
+            @if (value.stopwatches && value.stopwatches.length) {
             <div class="stopwatches__list">
               <app-stopwatch-list
                 [prefs]="prefs"
@@ -126,6 +124,7 @@ provideVSCodeDesignSystem().register(vsCodeProgressRing);
     `,
   ],
   imports: [
+    NgClass,
     MatDialogModule,
     MatSidenavModule,
     StopwatchesStatsComponent,
@@ -186,7 +185,6 @@ export class HomeComponent implements OnInit {
   onOpenPrefs(): void {
     this.dialog.open(PrefsComponent, {
       width: "800px",
-      disableClose: true,
     });
   }
 
