@@ -12,13 +12,13 @@ jobs:
       - name: node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 20
           registry-url: https://registry.npmjs.org
-      - run: npm run install:all
-      - run: npm run build:webview
+      - run: yarn install:all
+      - run: yarn build:webview
       - run: npm install -g @vscode/vsce
       - name: publish
-        run: npm run deploy
+        run: yarn deploy
         env:
           VSCE_USER: ${{secrets.VSCE_USER}}
           VSCE_PAT: ${{ secrets.VSCE_PAT }}

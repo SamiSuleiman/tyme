@@ -36,14 +36,14 @@
     ]
   },
   "scripts": {
-    "install:all": "npm install && cd webview-ui && npm install",
-    "start:webview": "cd webview-ui && npm run start",
-    "build:webview": "cd webview-ui && npm run build",
-    "vscode:prepublish": "npm run compile",
+    "install:all": "yarn && cd webview-ui && yarn",
+    "start:webview": "cd webview-ui && yarn start",
+    "build:webview": "cd webview-ui && yarn build",
+    "vscode:prepublish": "yarn compile",
     "compile": "tsc -p ./",
     "deploy": "vsce publish",
     "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
+    "pretest": "yarn compile && yarn lint",
     "lint": "eslint src --ext ts"
   },
   "devDependencies": {
