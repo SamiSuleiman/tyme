@@ -21,3 +21,13 @@ body {
 .hidden {
   display: none;
 }
+
+.mat-mdc-snack-bar-container {
+  --mat-mdc-snack-bar-button-color: var(--foreground);
+  --mdc-snackbar-supporting-text-color: var(--foreground);
+  --mat-snack-bar-button-color: var(--foreground);
+  
+  &.app-notification-success {
+    --mdc-snackbar-container-color: var(--background);
+  }
+}

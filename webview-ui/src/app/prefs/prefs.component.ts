@@ -8,10 +8,11 @@ import {
 } from "@angular/core";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import { MatDialogModule, MatDialogRef } from "@angular/material/dialog";
+import { MatDialogModule } from "@angular/material/dialog";
 import { take, tap } from "rxjs";
 import { CheckboxComponent } from "../ui/components/checkbox.component";
 import { KeybindSelectionInputComponent } from "../ui/components/keybind-selection-input.component";
+import { SnackService } from "../ui/services/snack.service";
 import { Prefs } from "./prefs.model";
 import { PrefsService } from "./prefs.service";
 
@@ -134,9 +135,9 @@ import { PrefsService } from "./prefs.service";
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class PrefsComponent implements OnInit {
-  private readonly matDialog = inject(MatDialogRef);
   private readonly perfsService = inject(PrefsService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly snackService = inject(SnackService);
 
   prefsForm = new FormGroup({
     filter: new FormGroup({
@@ -170,7 +171,10 @@ export class PrefsComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (!this.prefsForm.pristine) this.perfsService.update(this.prefsForm.value as Prefs);
+    if (!this.prefsForm.pristine) {
+      this.perfsService.update(this.prefsForm.value as Prefs);
+      this.snackService.openSnackBar("Preferences updated");
+    }
   }
 
   getControl(group?: string, key?: string): FormControl {
