@@ -255,8 +255,6 @@ export class HomeComponent implements OnInit {
               case keybinds.deleteAll:
                 executeAction(this.onRemoveAll.bind(this));
                 break;
-              case keybinds.submit:
-                break;
               case keybinds.toggleDrawer:
                 this.drawer.toggle();
                 this.cdr.detectChanges();

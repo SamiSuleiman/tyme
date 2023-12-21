@@ -101,7 +101,6 @@ export class UpsertStopwatchComponent {
     this.prefs$
       .pipe(
         switchMap(({ keybinds }) => {
-          console.log(keybinds);
           return this.keybindsService.listenToKeybinds$([keybinds.submit]).pipe(
             tap(() => this.onConfirm()),
             takeUntilDestroyed()
