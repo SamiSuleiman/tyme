@@ -1,69 +1,60 @@
 import { CommonModule } from "@angular/common";
-import {
-  CUSTOM_ELEMENTS_SCHEMA,
-  ChangeDetectionStrategy,
-  Component,
-  HostListener,
-  OnInit,
-  inject,
-} from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { allComponents, provideVSCodeDesignSystem } from "@vscode/webview-ui-toolkit";
+import { Duration } from "luxon";
 import { BehaviorSubject, switchMap, take, tap } from "rxjs";
-import { TextAreaComponent } from "src/app/ui/components/text-area.component";
-import { TextFieldComponent } from "src/app/ui/components/text-field.component";
-import { AddStopwatch, Stopwatch } from "../stopwatch.model";
+import { KeybindsService } from "../../prefs/keybinds.service";
+import { PrefsService } from "../../prefs/prefs.service";
+import { TextAreaComponent } from "../../ui/components/text-area.component";
+import { TextFieldComponent } from "../../ui/components/text-field.component";
+import { AddStopwatch, Elapsed, Stopwatch, TimeUnit, timeUnits } from "../stopwatch.model";
 import { StopwatchesService } from "../stopwatches.service";
 
 provideVSCodeDesignSystem().register(allComponents);
 
 @Component({
   template: `
-    <form
-      class="row"
-      [formGroup]="stopwatchForm"
-      *ngIf="{ value: stopwatch$ | async } as stopwatch"
-    >
+    @if ({ value: stopwatch$ | async }; as stopwatch) {
+    <form class="row" [formGroup]="stopwatchForm">
       <app-text-field
-        placeholder="short and simple name."
-        label="name"
+        placeholder="Short and simple name"
+        label="Name"
         size="50"
         formControlName="name"
         icon="tasklist"
       ></app-text-field>
       <app-text-area
-        placeholder="describe the entry."
-        label="description"
+        placeholder="Describe the entry"
+        label="Description"
         formControlName="desc"
       ></app-text-area>
       <app-text-field
         [disabled]="!!stopwatch.value"
-        label="offset in minutes"
+        label="Already elpased time"
+        placeholder="ex.: 1w 1d 1h 30m 15s"
         size="50"
-        formControlName="elapsedInMin"
+        formControlName="elapsed"
         icon="watch"
-        type="number"
       ></app-text-field>
 
-      <vscode-button
-        *ngIf="!stopwatch.value; else confirm"
-        (click)="onConfirm()"
-        appearance="icon"
-        [disabled]="stopwatchForm.invalid"
-      >
+      @if (!stopwatch.value) {
+      <vscode-button (click)="onConfirm()" appearance="icon" [disabled]="stopwatchForm.invalid">
         <span class="icon"><i class="codicon codicon-add"></i></span>
       </vscode-button>
-      <ng-template #confirm>
-        <div class="edit-actions">
-          <vscode-button (click)="onConfirm()" appearance="icon" [disabled]="stopwatchForm.invalid">
-            <span class="icon"><i class="codicon codicon-check"></i></span>
-          </vscode-button>
-          <vscode-button (click)="onCancelEdit()" appearance="icon">
-            <span class="icon"><i class="codicon codicon-discard"></i></span>
-          </vscode-button>
-        </div>
-      </ng-template>
+      } @else {
+      <div class="edit-actions">
+        <vscode-button (click)="onConfirm()" appearance="icon" [disabled]="stopwatchForm.invalid">
+          <span class="icon"><i class="codicon codicon-check"></i></span>
+        </vscode-button>
+        <vscode-button (click)="onCancelEdit()" appearance="icon">
+          <span class="icon"><i class="codicon codicon-discard"></i></span>
+        </vscode-button>
+      </div>
+      }
     </form>
+    }
   `,
   styles: [
     `
@@ -91,18 +82,33 @@ provideVSCodeDesignSystem().register(allComponents);
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class UpsertStopwatchComponent implements OnInit {
+export class UpsertStopwatchComponent {
   private readonly service = inject(StopwatchesService);
+  private readonly keybindsService = inject(KeybindsService);
+  private readonly prefs$ = inject(PrefsService).prefs$;
+
+  elapsedPattern = new RegExp(/\b\d+[smhdw]\b/m);
 
   stopwatch$ = new BehaviorSubject<Stopwatch | undefined>(undefined);
 
   stopwatchForm = new FormGroup({
     name: new FormControl<string>("", [Validators.required]),
     desc: new FormControl<string>(""),
-    elapsedInMin: new FormControl(0),
+    elapsed: new FormControl<string>(""),
   });
 
-  ngOnInit() {
+  constructor() {
+    this.prefs$
+      .pipe(
+        switchMap(({ keybinds }) => {
+          return this.keybindsService
+            .listenToKeybinds$([keybinds.submit])
+            .pipe(tap(() => this.onConfirm()));
+        }),
+        takeUntilDestroyed()
+      )
+      .subscribe();
+
     this.service.bufferStopwatch$
       .pipe(
         tap((s) => {
@@ -111,19 +117,23 @@ export class UpsertStopwatchComponent implements OnInit {
             this.resetForm();
             this.stopwatchForm.patchValue({ name: s.name, desc: s.desc });
           }
-        })
+        }),
+        takeUntilDestroyed()
       )
       .subscribe();
   }
 
-  @HostListener("window:keydown.alt.enter", ["$event"])
-  onConfirm() {
+  onConfirm(): void {
     if (this.stopwatchForm.invalid) return;
     this.stopwatch$
       .pipe(
         take(1),
         switchMap((s) => {
-          if (!s) return this.service.add$(this.stopwatchForm.value as AddStopwatch);
+          if (!s)
+            return this.service.add$({
+              ...this.stopwatchForm.value,
+              elapsed: this.parseElapsed(this.stopwatchForm.value.elapsed ?? ""),
+            } as AddStopwatch);
           return this.service.update$([
             {
               ...s,
@@ -140,12 +150,27 @@ export class UpsertStopwatchComponent implements OnInit {
       .subscribe();
   }
 
-  onCancelEdit() {
+  onCancelEdit(): void {
     this.service.bufferStopwatch$.next(undefined);
     this.resetForm();
   }
 
-  private resetForm() {
+  private resetForm(): void {
     this.stopwatchForm.reset();
+  }
+
+  private parseElapsed(elapsed: string): Duration {
+    return elapsed
+      .split(" ")
+      .filter((candidate) => this.elapsedPattern.test(candidate))
+      .map((elapsed) => {
+        return {
+          unit: elapsed.match(/\D/m)?.[0] as TimeUnit,
+          duration: parseInt(elapsed.match(/\d+/m)?.[0] ?? "") ?? 0,
+        } as Elapsed;
+      })
+      .reduce((a, b) => {
+        return Duration.fromObject({ [timeUnits[b.unit]]: b.duration }).plus(a);
+      }, Duration.fromMillis(0));
   }
 }

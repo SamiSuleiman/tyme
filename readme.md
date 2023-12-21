@@ -1,5 +1,7 @@
 # tyme
 
+***todo: update readme***
+---
 a simple vscode extension to help you track the time you spend on your tasks.
 
 <!-- track the time you spend on tasks. -->

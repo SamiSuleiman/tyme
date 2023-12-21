@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeDivider, vsCodeTag } from "@vscode/webview-ui-toolkit";
 import { Stopwatch } from "./stopwatch.model";
@@ -8,7 +8,8 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
 
 @Component({
   template: `
-    <div *ngIf="stopwatches | stopwatchesStats | async as stats">
+    @if (stopwatches | stopwatchesStats | async; as stats) {
+    <div>
       <section class="counters">
         <vscode-tag>running: {{ stats.runningCount }}</vscode-tag>
         <vscode-tag>paused: {{ stats.pausedCount }}</vscode-tag>
@@ -21,13 +22,14 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
       </section>
       <vscode-divider></vscode-divider>
     </div>
+    }
   `,
   styles: [
     `
       div {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 3px;
       }
 
       section {
@@ -39,7 +41,7 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
       .stats,
       section {
         display: flex;
-        gap: 0.5rem;
+        gap: 3px;
       }
 
       .stats {
@@ -47,7 +49,7 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
       }
     `,
   ],
-  imports: [CommonModule, StopwatchesStatsPipe],
+  imports: [StopwatchesStatsPipe, AsyncPipe],
   selector: "app-stopwatches-stats",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,5 +1,33 @@
+html,
+body {
+  height: 100%;
+}
+
+html {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 .row {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.mat-mdc-snack-bar-container {
+  --mat-mdc-snack-bar-button-color: var(--foreground);
+  --mdc-snackbar-supporting-text-color: var(--foreground);
+  --mat-snack-bar-button-color: var(--foreground);
+  
+  &.app-notification-success {
+    --mdc-snackbar-container-color: var(--background);
+  }
 }

@@ -36,10 +36,10 @@ export class CheckboxComponent implements ControlValueAccessor {
   @Input() disabled = false;
   @Input() checked = false;
 
-  onChange = (value: string) => {};
+  onChange = (value: string): void => {};
   onTouched = () => {};
 
-  writeValue(obj: any) {
+  writeValue(obj: any): void {
     if (this.disabled) return;
 
     this.value = obj;
@@ -47,19 +47,19 @@ export class CheckboxComponent implements ControlValueAccessor {
     this.onTouched();
   }
 
-  registerOnChange(fn: any) {
+  registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any) {
+  registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
-  setDisabledState?(isDisabled: boolean) {
+  setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 
-  onInput(el: any) {
+  onInput(el: any): void {
     this.writeValue(el.checked);
   }
 }

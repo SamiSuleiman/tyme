@@ -3,14 +3,16 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  OnInit,
   Output,
+  inject,
 } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeButton, vsCodeDivider } from "@vscode/webview-ui-toolkit";
-import { startWith } from "rxjs";
+import { switchMap, tap } from "rxjs";
+import { PrefsService } from "../prefs/prefs.service";
 import { CheckboxComponent } from "../ui/components/checkbox.component";
-import { StopwatchesFilter, defaultFilter } from "./stopwatch.model";
+import { StopwatchFilter } from "./stopwatch.model";
 
 provideVSCodeDesignSystem().register(vsCodeDivider, vsCodeButton);
 
@@ -61,10 +63,8 @@ provideVSCodeDesignSystem().register(vsCodeDivider, vsCodeButton);
         align-items: center;
       }
 
-      .actions {
-        display: grid;
-        gap: 0.5rem;
-        grid-template-columns: 1fr 1fr;
+      vscode-button {
+        margin: 3px;
       }
     `,
   ],
@@ -74,28 +74,36 @@ provideVSCodeDesignSystem().register(vsCodeDivider, vsCodeButton);
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class StopwatchesActionsComponent implements OnInit {
+export class StopwatchesActionsComponent {
   @Output() readonly pauseAll = new EventEmitter<void>();
   @Output() readonly resumeAll = new EventEmitter<void>();
   @Output() readonly stopAll = new EventEmitter<void>();
   @Output() readonly removeAll = new EventEmitter<void>();
   @Output() readonly filterChange = new EventEmitter<any>();
 
-  filterGroup = new FormGroup({
+  prefs$ = inject(PrefsService).prefs$;
+
+  readonly filterGroup = new FormGroup({
     running: new FormControl(false),
     paused: new FormControl(false),
     stopped: new FormControl(false),
   });
 
-  ngOnInit() {
-    //todo: get from user settings once we have user settings :)
-    this.filterGroup.setValue(defaultFilter);
-    this.filterGroup.valueChanges
-      .pipe(startWith(defaultFilter))
-      .subscribe((vals) => this.filterChange.emit(vals as StopwatchesFilter));
+  constructor() {
+    this.prefs$
+      .pipe(
+        tap((prefs) => this.filterGroup.setValue(prefs.filter)),
+        switchMap(() =>
+          this.filterGroup.valueChanges.pipe(
+            tap((valChanges) => this.filterChange.emit(valChanges as StopwatchFilter))
+          )
+        ),
+        takeUntilDestroyed()
+      )
+      .subscribe();
   }
 
-  getControlVal(key: string) {
+  getControlVal(key: string): boolean {
     return this.filterGroup.get(key)?.value;
   }
 }

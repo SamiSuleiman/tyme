@@ -29,7 +29,7 @@ export class StopwatchesStatsPipe implements PipeTransform {
     );
   }
 
-  private totalElapsed(stopwatches: Stopwatch[]) {
+  private totalElapsed(stopwatches: Stopwatch[]): string {
     return this.stopwatchService.formatDuration(
       stopwatches
         .map((s) => this.stopwatchService.getElapsed(s).raw)

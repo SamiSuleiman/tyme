@@ -53,26 +53,26 @@ export class TextFieldComponent implements ControlValueAccessor {
   onChange = (value: string) => {};
   onTouched = () => {};
 
-  writeValue(obj: any) {
+  writeValue(obj: any): void {
     this.value = obj;
     this.onChange(obj);
     this.onTouched();
     this.cdr.markForCheck();
   }
 
-  registerOnChange(fn: any) {
+  registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any) {
+  registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
-  setDisabledState?(isDisabled: boolean) {
+  setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 
-  onInput(el: any) {
+  onInput(el: any): void {
     this.writeValue(el.value);
   }
 }

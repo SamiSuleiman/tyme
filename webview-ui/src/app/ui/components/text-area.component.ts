@@ -48,10 +48,10 @@ export class TextAreaComponent implements ControlValueAccessor {
   @Input() placeholder = "";
   @Input() icon = "";
 
-  onChange = (value: string) => {};
-  onTouched = () => {};
+  onChange = (value: string): void => {};
+  onTouched = (): void => {};
 
-  writeValue(obj: any) {
+  writeValue(obj: any): void {
     if (this.disabled) return;
 
     this.value = obj;
@@ -60,19 +60,19 @@ export class TextAreaComponent implements ControlValueAccessor {
     this.cdr.markForCheck();
   }
 
-  registerOnChange(fn: any) {
+  registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any) {
+  registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
-  setDisabledState?(isDisabled: boolean) {
+  setDisabledState?(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 
-  onInput(el: any) {
+  onInput(el: any): void {
     this.writeValue(el.value);
   }
 }
