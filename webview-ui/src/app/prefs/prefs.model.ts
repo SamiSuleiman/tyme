@@ -33,3 +33,8 @@ export const defaultPrefs: Prefs = {
   showStats: true,
   showBulkActions: true,
 };
+
+export interface KeybindPressEvent {
+  event: KeyboardEvent;
+  keybind: string;
+}

@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy, Renderer2, inject } from "@angular/core";
 import { Observable, Subject, filter } from "rxjs";
+import { KeybindPressEvent } from "./prefs.model";
 
 @Injectable()
 export class KeybindsService implements OnDestroy {
@@ -39,9 +40,4 @@ export class KeybindsService implements OnDestroy {
   ngOnDestroy(): void {
     this.dispose();
   }
-}
-
-export interface KeybindPressEvent {
-  event: KeyboardEvent;
-  keybind: string;
 }
