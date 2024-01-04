@@ -18,12 +18,12 @@ export interface Keybinds {
 }
 
 const defaultKeybinds: Keybinds = {
-  deleteAll: "alt.backspace",
-  pauseAll: "alt.p",
-  resumeAll: "alt.r",
-  stopAll: "alt.enter.s",
-  toggleDrawer: "alt.d",
-  submit: "alt.enter",
+  deleteAll: "meta.backspace",
+  pauseAll: "meta.p",
+  resumeAll: "meta.r",
+  stopAll: "meta.s",
+  toggleDrawer: "meta.d",
+  submit: "meta.enter",
 };
 
 export const defaultPrefs: Prefs = {
