@@ -5,9 +5,9 @@ import {
   Component,
   DestroyRef,
   HostListener,
-  Input,
   OnInit,
   inject,
+  input,
   signal,
 } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -21,13 +21,13 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
   template: `
     <div>
       <p>
-        {{ label }}: <code>{{ keybindControl.value }}</code>
+        {{ $label() }}: <code>{{ $keybindControl().value }}</code>
       </p>
       <vscode-text-field
         (focusout)="endListening()"
         (click)="startListening()"
         type="string"
-        [placeholder]="keybindSelectorPlaceholder()"
+        [placeholder]="$keybindSelectorPlaceholder()"
         appearance="icon"
         readonly
       >
@@ -60,26 +60,26 @@ export class KeybindSelectionInputComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly keybindsService = inject(KeybindsService);
 
-  @Input({ required: true }) label: string;
-  @Input({ required: true }) keybindControl: FormControl<string>;
+  $label = input.required<string>({ alias: "label" });
+  $keybindControl = input.required<FormControl<string>>({ alias: "keybindControl" });
 
-  isListening = signal(false);
-  keybindSelectorPlaceholder = signal("Press here to start listening");
+  $isListening = signal(false);
+  $keybindSelectorPlaceholder = signal("Press here to start listening");
 
   ngOnInit(): void {
-    this.keybindControl.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.$keybindControl()
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.cdr.detectChanges());
   }
 
   startListening() {
-    this.keybindSelectorPlaceholder.set("listening...");
-    this.isListening.set(true);
+    this.$keybindSelectorPlaceholder.set("listening...");
+    this.$isListening.set(true);
   }
 
   @HostListener("window:keydown", ["$event"])
   onSelecting(event: KeyboardEvent) {
-    if (!this.isListening()) return;
+    if (!this.$isListening()) return;
 
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -88,12 +88,12 @@ export class KeybindSelectionInputComponent implements OnInit {
     const keybind = this.keybindsService.getKeybindFromKeyboardEvent(event);
     if (!keybind) return;
 
-    this.keybindControl.setValue(keybind);
+    this.$keybindControl().setValue(keybind);
     this.endListening();
   }
 
   endListening() {
-    this.keybindSelectorPlaceholder.set("Press here to start listening");
-    this.isListening.set(false);
+    this.$keybindSelectorPlaceholder.set("Press here to start listening");
+    this.$isListening.set(false);
   }
 }

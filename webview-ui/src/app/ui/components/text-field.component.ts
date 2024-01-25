@@ -3,9 +3,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   forwardRef,
   inject,
+  input,
 } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeTextField } from "@vscode/webview-ui-toolkit";
@@ -16,15 +16,15 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
   template: `
     <vscode-text-field
       style="width: 100%"
-      [type]="type"
+      [type]="$type()"
       [value]="value"
-      [placeholder]="placeholder"
+      [placeholder]="$placeholder()"
       (input)="onInput($event.target)"
-      [disabled]="disabled"
+      [disabled]="$disabled()"
       appearance="icon"
     >
-      <span slot="start" class="{{ 'codicon codicon-' + icon }}"></span>
-      {{ label }}
+      <span slot="start" class="{{ 'codicon codicon-' + $icon() }}"></span>
+      {{ $label() }}
     </vscode-text-field>
   `,
   providers: [
@@ -42,13 +42,13 @@ provideVSCodeDesignSystem().register(vsCodeTextField);
 export class TextFieldComponent implements ControlValueAccessor {
   private readonly cdr = inject(ChangeDetectorRef);
 
-  value: string = "";
+  $disabled = input(false, { alias: "disabled" });
+  $placeholder = input("", { alias: "placeholder" });
+  $icon = input("", { alias: "icon" });
+  $type = input<"number" | "string">("string", { alias: "type" });
+  $label = input("", { alias: "label" });
 
-  @Input() disabled = false;
-  @Input() placeholder = "";
-  @Input() icon = "";
-  @Input() type: "number" | "string" = "string";
-  @Input() label = "";
+  value: string = "";
 
   onChange = (value: string) => {};
   onTouched = () => {};
@@ -66,10 +66,6 @@ export class TextFieldComponent implements ControlValueAccessor {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
   }
 
   onInput(el: any): void {

@@ -3,9 +3,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
   forwardRef,
   inject,
+  input,
 } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeTextArea } from "@vscode/webview-ui-toolkit";
@@ -18,12 +18,12 @@ provideVSCodeDesignSystem().register(vsCodeTextArea);
       style="width: 100%"
       [value]="value"
       resize="vertical"
-      [placeholder]="placeholder"
+      [placeholder]="$placeholder()"
       (input)="onInput($event.target)"
       cols="22"
       rows="10"
     >
-      {{ label }}
+      {{ $label() }}
     </vscode-text-area>
   `,
   providers: [
@@ -43,16 +43,16 @@ export class TextAreaComponent implements ControlValueAccessor {
 
   value: string = "";
 
-  @Input() label = "";
-  @Input() disabled = false;
-  @Input() placeholder = "";
-  @Input() icon = "";
+  $label = input("", { alias: "label" });
+  $disabled = input(false, { alias: "disabled" });
+  $placeholder = input("", { alias: "placeholder" });
+  $icon = input("", { alias: "icon" });
 
   onChange = (value: string): void => {};
   onTouched = (): void => {};
 
   writeValue(obj: any): void {
-    if (this.disabled) return;
+    if (this.$disabled()) return;
 
     this.value = obj;
     this.onChange(obj);
@@ -66,10 +66,6 @@ export class TextAreaComponent implements ControlValueAccessor {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
   }
 
   onInput(el: any): void {

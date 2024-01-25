@@ -2,8 +2,8 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   ChangeDetectionStrategy,
   Component,
-  Input,
   forwardRef,
+  input,
 } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { provideVSCodeDesignSystem, vsCodeCheckbox } from "@vscode/webview-ui-toolkit";
@@ -12,8 +12,12 @@ provideVSCodeDesignSystem().register(vsCodeCheckbox);
 
 @Component({
   template: `
-    <vscode-checkbox [disabled]="disabled" [checked]="checked" (change)="onInput($event.target)">
-      {{ label }}
+    <vscode-checkbox
+      [disabled]="$disabled()"
+      [checked]="$checked()"
+      (change)="onInput($event.target)"
+    >
+      {{ $label() }}
     </vscode-checkbox>
   `,
   styles: [],
@@ -32,15 +36,15 @@ provideVSCodeDesignSystem().register(vsCodeCheckbox);
 export class CheckboxComponent implements ControlValueAccessor {
   value = false;
 
-  @Input({ required: true }) label = "";
-  @Input() disabled = false;
-  @Input() checked = false;
+  $label = input("", { alias: "label" });
+  $disabled = input(false, { alias: "disabled" });
+  $checked = input(false, { alias: "checked" });
 
   onChange = (value: string): void => {};
   onTouched = () => {};
 
   writeValue(obj: any): void {
-    if (this.disabled) return;
+    if (this.$disabled()) return;
 
     this.value = obj;
     this.onChange(obj);
@@ -53,10 +57,6 @@ export class CheckboxComponent implements ControlValueAccessor {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
-  }
-
-  setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
   }
 
   onInput(el: any): void {

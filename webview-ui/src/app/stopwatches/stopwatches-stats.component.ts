@@ -1,5 +1,5 @@
 import { AsyncPipe } from "@angular/common";
-import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { provideVSCodeDesignSystem, vsCodeDivider, vsCodeTag } from "@vscode/webview-ui-toolkit";
 import { Stopwatch } from "./stopwatch.model";
 import { StopwatchesStatsPipe } from "./stopwatches-stats.pipe";
@@ -8,7 +8,7 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
 
 @Component({
   template: `
-    @if (stopwatches | stopwatchesStats | async; as stats) {
+    @if ($stopwatches() | stopwatchesStats | async; as stats) {
     <div>
       <section class="counters">
         <vscode-tag>running: {{ stats.runningCount }}</vscode-tag>
@@ -56,5 +56,5 @@ provideVSCodeDesignSystem().register(vsCodeTag, vsCodeDivider);
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class StopwatchesStatsComponent {
-  @Input({ required: true }) stopwatches: Stopwatch[] = [];
+  $stopwatches = input.required<Stopwatch[]>({ alias: "stopwatches" });
 }

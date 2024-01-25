@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 import { Prefs } from "../prefs/prefs.model";
 import { Stopwatch } from "./stopwatch.model";
 import { StopwatchComponent } from "./stopwatch/stopwatch.component";
 
 @Component({
   template: `
-    @for (item of stopwatches; track item) {
+    @for (stopwatch of $stopwatches(); track stopwatch) {
     <div>
-      <app-stopwatch [prefs]="prefs" [stopwatch]="item"></app-stopwatch>
+      <app-stopwatch [prefs]="$prefs()" [stopwatch]="stopwatch"></app-stopwatch>
     </div>
     }
   `,
@@ -17,6 +17,6 @@ import { StopwatchComponent } from "./stopwatch/stopwatch.component";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StopwatchListComponent {
-  @Input({ required: true }) stopwatches: Stopwatch[] = [];
-  @Input({ required: true }) prefs: Prefs;
+  $stopwatches = input.required<Stopwatch[]>({ alias: "stopwatches" });
+  $prefs = input.required<Prefs>({ alias: "prefs" });
 }
